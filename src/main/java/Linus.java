@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.lang.StringBuilder;
 
 public class Linus {
     public static final String HORIZONTAL_LINE = "____________________________________________________________";
@@ -37,10 +38,33 @@ public class Linus {
                 this.bye();
                 break;
             }
-            this.echo(command);
+            if (command.equals("list")){
+                this.listAll();
+                continue;
+            }
+            this.addToList(command);
         }
     }
 
+    public void addToList(String text) {
+        this.list.add(text);
+        this.echo("added: " + text);
+    }
+
+    public void listAll() {
+        StringBuilder string = new StringBuilder();
+        int length = this.list.size();
+        for (int i = 0; i < length; i++) {
+            string.append(i + 1);
+            string.append(". ");
+            string.append(this.list.get(i));
+            if (i == length - 1) {
+                break;
+            }
+            string.append("\n");
+        }
+        this.echo(string.toString());
+    }
 
     public void echo(String command) {
             System.out.println(Linus.HORIZONTAL_LINE);
