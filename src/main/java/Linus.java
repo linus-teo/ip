@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Linus {
@@ -7,12 +9,17 @@ public class Linus {
             + "| |   | | '_ \\| | | / __|\n"
             + "| |___| | | | | |_| \\__ \\\n"
             + "|_____|_|_| |_|\\__,_|___/\n";
+    private List<String> list;
 
     public static void main(String[] args) {
         Linus chatbot = new Linus();
         Scanner scanner = new Scanner(System.in);
         chatbot.hello();
         chatbot.parse(scanner);
+    }
+
+    public Linus() {
+        this.list = new ArrayList<>();
     }
 
     public void hello() {
