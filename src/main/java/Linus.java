@@ -10,8 +10,9 @@ public class Linus {
 
     public static void main(String[] args) {
         Linus chatbot = new Linus();
+        Scanner scanner = new Scanner(System.in);
         chatbot.hello();
-        chatbot.echo();
+        chatbot.parse(scanner);
     }
 
     public void hello() {
@@ -22,21 +23,26 @@ public class Linus {
         System.out.println(Linus.HORIZONTAL_LINE);
     }
 
-    public void echo() {
+    public void parse(Scanner scanner) {
         while (true) {
-            Scanner scanner = new Scanner(System.in);
             String command = scanner.nextLine();
-            System.out.println(Linus.HORIZONTAL_LINE);
             if (command.equals("bye")) {
                 this.bye();
                 break;
             }
-            System.out.println(command);
-            System.out.println(Linus.HORIZONTAL_LINE);
+            this.echo(command);
         }
     }
 
+
+    public void echo(String command) {
+            System.out.println(Linus.HORIZONTAL_LINE);
+            System.out.println(command);
+            System.out.println(Linus.HORIZONTAL_LINE);
+    }
+
     public void bye() {
+        System.out.println(Linus.HORIZONTAL_LINE);
         System.out.println("Bye! Hope to see you again soon!");
         System.out.println(Linus.HORIZONTAL_LINE);
     }
