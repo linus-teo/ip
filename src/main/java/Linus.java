@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Linus {
     public static final String HORIZONTAL_LINE = "____________________________________________________________";
     public static final String BANNER = " _     _                 \n"
@@ -9,7 +11,7 @@ public class Linus {
     public static void main(String[] args) {
         Linus chatbot = new Linus();
         chatbot.hello();
-        chatbot.bye();
+        chatbot.echo();
     }
 
     public void hello() {
@@ -18,6 +20,20 @@ public class Linus {
         System.out.println("Hello! My name is Linus.");
         System.out.println("How may I help you today?");
         System.out.println(Linus.HORIZONTAL_LINE);
+    }
+
+    public void echo() {
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            String command = scanner.nextLine();
+            System.out.println(Linus.HORIZONTAL_LINE);
+            if (command.equals("bye")) {
+                this.bye();
+                break;
+            }
+            System.out.println(command);
+            System.out.println(Linus.HORIZONTAL_LINE);
+        }
     }
 
     public void bye() {
