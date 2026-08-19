@@ -57,9 +57,17 @@ public class Linus {
     }
 
     public void addToList(String text) {
-        Task task = new Task(false, text);
+        Task task;
+        if (text.matches("^todo .+$")) {
+            task = new ToDo(false, text);
+        } else {
+            task = new Task(false, text);
+        }
         this.taskList.add(task);
-        this.echo("added: " + text);
+        StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
+        output.append(task + "\n");
+        output.append("Now you have " + this.taskList.size() + " tasks in the list.");
+        this.echo(output.toString());
     }
 
     public void listAll() {
