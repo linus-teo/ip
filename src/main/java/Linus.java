@@ -52,6 +52,11 @@ public class Linus {
                 this.unmark(position);
                 continue;
             }
+            if (command.matches("^delete -?\\d+(\\.\\d+)?$")) {
+                double position = Double.parseDouble(command.substring(7));
+                this.delete(position);
+                continue;
+            }
             this.addToList(command);
         }
     }
@@ -127,6 +132,20 @@ public class Linus {
         task.unmark();
         String output = "OK, I've marked this task as not done yet: \n" + task;
         this.echo(output);
+    }
+
+    public void delete(double position) {
+        if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
+            System.out.println("Please enter a valid task number.");
+            return;
+        }
+        int taskId = (int) position - 1;
+        Task task = this.taskList.get(taskId);
+        this.taskList.remove(taskId);
+        StringBuilder output = new StringBuilder("Noted. I've removed this task: \n");
+        output.append(task).append("\n");
+        output.append("Now you have " + this.taskList.size() + " tasks in the list.");
+        this.echo(output.toString());
     }
 
     public void echo(String command) {
