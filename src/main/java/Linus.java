@@ -58,34 +58,36 @@ public class Linus {
 
     public void addToList(String text) {
         Task task;
-        if (text.matches("^todo .+$")) {
-            String description = text.substring(5);
-            task = new ToDo(false, description);
-        } else if (text.matches("^deadline .+ /by .+$")) {
-            int byIndex = text.indexOf(" /by");
-            String description = text.substring(9, byIndex);
-            String deadline = text.substring(byIndex + 5);
-            task = new Deadline(false, description, deadline);
-        } else if (text.matches("^event .+ /from .+ /to .+$")) {
-            int fromIndex = text.indexOf(" /from");
-            int toIndex = text.indexOf(" /to");
-            String description = text.substring(6, fromIndex);
-            String start = text.substring(fromIndex + 7, toIndex);
-            String end = text.substring(toIndex + 5);
-            System.out.println(description);
-            System.out.println(start);
-            System.out.println(end);
-            task = new Event(false, description, start, end);
+        try {
+            if (text.matches("^todo\\s*$")) {
+                throw new InvalidTaskException("OOPS!!! The description of a todo cannot be empty.");
+            }
+            else if (text.matches("^todo .*$")) {
+                String description = text.substring(5);
+                task = new ToDo(false, description);
+            } else if (text.matches("^deadline .+ /by .+$")) {
+                int byIndex = text.indexOf(" /by");
+                String description = text.substring(9, byIndex);
+                String deadline = text.substring(byIndex + 5);
+                task = new Deadline(false, description, deadline);
+            } else if (text.matches("^event .+ /from .+ /to .+$")) {
+                int fromIndex = text.indexOf(" /from");
+                int toIndex = text.indexOf(" /to");
+                String description = text.substring(6, fromIndex);
+                String start = text.substring(fromIndex + 7, toIndex);
+                String end = text.substring(toIndex + 5);
+                task = new Event(false, description, start, end);
+            } else {
+                throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+            }
+            this.taskList.add(task);
+            StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
+            output.append(task).append("\n");
+            output.append("Now you have " + this.taskList.size() + " tasks in the list.");
+            this.echo(output.toString());
+        } catch (InvalidTaskException e) {
+            this.echo(e.getMessage());
         }
-        else {
-            System.out.println("Please enter a valid task.");
-            return;
-        }
-        this.taskList.add(task);
-        StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
-        output.append(task).append("\n");
-        output.append("Now you have " + this.taskList.size() + " tasks in the list.");
-        this.echo(output.toString());
     }
 
     public void listAll() {
