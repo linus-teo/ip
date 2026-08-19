@@ -47,6 +47,11 @@ public class Linus {
                 this.mark(position);
                 continue;
             }
+            if (command.matches("^unmark -?\\d+(\\.\\d+)?$")) {
+                double position = Double.parseDouble(command.substring(7));
+                this.unmark(position);
+                continue;
+            }
             this.addToList(command);
         }
     }
@@ -81,6 +86,19 @@ public class Linus {
         task.setCharAt(1, 'X');
         this.list.set(taskId, task.toString());
         String output = "Nice! I've marked this task as done: \n" + task;
+        this.echo(output);
+    }
+
+    public void unmark(double position) {
+        if (position < 1 || position > this.list.size() || position != Math.floor(position)) {
+            System.out.println("Please enter a valid task number.");
+            return;
+        }
+        int taskId = (int) position - 1;
+        StringBuilder task = new StringBuilder(this.list.get(taskId));
+        task.setCharAt(1, ' ');
+        this.list.set(taskId, task.toString());
+        String output = "OK, I've marked this task as not done yet: \n" + task;
         this.echo(output);
     }
 
