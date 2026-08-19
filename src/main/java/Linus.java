@@ -59,13 +59,20 @@ public class Linus {
     public void addToList(String text) {
         Task task;
         if (text.matches("^todo .+$")) {
-            task = new ToDo(false, text);
-        } else {
+            String description = text.substring(5);
+            task = new ToDo(false, description);
+        } else if (text.matches("^deadline .+ /by .+$")) {
+            int byIndex = text.indexOf(" /by");
+            String description = text.substring(9, byIndex);
+            String deadline = text.substring(byIndex + 5);
+            task = new Deadline(false, description, deadline);
+        }
+        else {
             task = new Task(false, text);
         }
         this.taskList.add(task);
         StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
-        output.append(task + "\n");
+        output.append(task).append("\n");
         output.append("Now you have " + this.taskList.size() + " tasks in the list.");
         this.echo(output.toString());
     }
