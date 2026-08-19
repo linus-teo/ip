@@ -47,12 +47,12 @@ public class Linus {
     }
 
     public void addToList(String text) {
-        this.list.add(text);
+        this.list.add("[ ] " + text);
         this.echo("added: " + text);
     }
 
     public void listAll() {
-        StringBuilder string = new StringBuilder();
+        StringBuilder string = new StringBuilder("Here are the tasks in your list: \n");
         int length = this.list.size();
         for (int i = 0; i < length; i++) {
             string.append(i + 1);
