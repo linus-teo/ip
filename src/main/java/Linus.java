@@ -66,9 +66,20 @@ public class Linus {
             String description = text.substring(9, byIndex);
             String deadline = text.substring(byIndex + 5);
             task = new Deadline(false, description, deadline);
+        } else if (text.matches("^event .+ /from .+ /to .+$")) {
+            int fromIndex = text.indexOf(" /from");
+            int toIndex = text.indexOf(" /to");
+            String description = text.substring(6, fromIndex);
+            String start = text.substring(fromIndex + 7, toIndex);
+            String end = text.substring(toIndex + 5);
+            System.out.println(description);
+            System.out.println(start);
+            System.out.println(end);
+            task = new Event(false, description, start, end);
         }
         else {
-            task = new Task(false, text);
+            System.out.println("Please enter a valid task.");
+            return;
         }
         this.taskList.add(task);
         StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
