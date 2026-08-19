@@ -10,7 +10,7 @@ public class Linus {
             + "| |   | | '_ \\| | | / __|\n"
             + "| |___| | | | | |_| \\__ \\\n"
             + "|_____|_|_| |_|\\__,_|___/\n";
-    private List<String> list;
+    private List<Task> taskList;
 
     public static void main(String[] args) {
         Linus chatbot = new Linus();
@@ -20,7 +20,7 @@ public class Linus {
     }
 
     public Linus() {
-        this.list = new ArrayList<>();
+        this.taskList = new ArrayList<>();
     }
 
     public void hello() {
@@ -57,17 +57,18 @@ public class Linus {
     }
 
     public void addToList(String text) {
-        this.list.add("[ ] " + text);
+        Task task = new Task(false, text);
+        this.taskList.add(task);
         this.echo("added: " + text);
     }
 
     public void listAll() {
         StringBuilder string = new StringBuilder("Here are the tasks in your list: \n");
-        int length = this.list.size();
+        int length = this.taskList.size();
         for (int i = 0; i < length; i++) {
             string.append(i + 1);
             string.append(". ");
-            string.append(this.list.get(i));
+            string.append(this.taskList.get(i));
             if (i == length - 1) {
                 break;
             }
@@ -77,27 +78,25 @@ public class Linus {
     }
 
     public void mark(double position) {
-        if (position < 1 || position > this.list.size() || position != Math.floor(position)) {
+        if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
             System.out.println("Please enter a valid task number.");
             return;
         }
         int taskId = (int) position - 1;
-        StringBuilder task = new StringBuilder(this.list.get(taskId));
-        task.setCharAt(1, 'X');
-        this.list.set(taskId, task.toString());
+        Task task = this.taskList.get(taskId);
+        task.mark();
         String output = "Nice! I've marked this task as done: \n" + task;
         this.echo(output);
     }
 
     public void unmark(double position) {
-        if (position < 1 || position > this.list.size() || position != Math.floor(position)) {
+        if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
             System.out.println("Please enter a valid task number.");
             return;
         }
         int taskId = (int) position - 1;
-        StringBuilder task = new StringBuilder(this.list.get(taskId));
-        task.setCharAt(1, ' ');
-        this.list.set(taskId, task.toString());
+        Task task = this.taskList.get(taskId);
+        task.unmark();
         String output = "OK, I've marked this task as not done yet: \n" + task;
         this.echo(output);
     }
