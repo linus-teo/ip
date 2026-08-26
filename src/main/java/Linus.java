@@ -1,3 +1,8 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,6 +26,11 @@ public class Linus {
 
     public Linus() {
         this.taskList = new ArrayList<>();
+        try {
+            this.loadFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void hello() {
@@ -86,6 +96,7 @@ public class Linus {
                 throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
             this.taskList.add(task);
+            this.saveFile();
             StringBuilder output = new StringBuilder("Got it. I've added this task: \n");
             output.append(task).append("\n");
             output.append("Now you have " + this.taskList.size() + " tasks in the list.");
@@ -118,6 +129,7 @@ public class Linus {
         int taskId = (int) position - 1;
         Task task = this.taskList.get(taskId);
         task.mark();
+        this.saveFile();
         String output = "Nice! I've marked this task as done: \n" + task;
         this.echo(output);
     }
@@ -130,6 +142,7 @@ public class Linus {
         int taskId = (int) position - 1;
         Task task = this.taskList.get(taskId);
         task.unmark();
+        this.saveFile();
         String output = "OK, I've marked this task as not done yet: \n" + task;
         this.echo(output);
     }
@@ -142,6 +155,7 @@ public class Linus {
         int taskId = (int) position - 1;
         Task task = this.taskList.get(taskId);
         this.taskList.remove(taskId);
+        this.saveFile();
         StringBuilder output = new StringBuilder("Noted. I've removed this task: \n");
         output.append(task).append("\n");
         output.append("Now you have " + this.taskList.size() + " tasks in the list.");
@@ -152,6 +166,54 @@ public class Linus {
             System.out.println(Linus.HORIZONTAL_LINE);
             System.out.println(command);
             System.out.println(Linus.HORIZONTAL_LINE);
+    }
+
+    public void loadFile() throws IOException {
+        Path path = Paths.get("data", "tasklist.txt");
+        if (!Files.exists(path)) {
+            Files.createDirectories(path.getParent());
+            Files.createFile(path);
+            return;
+        }
+        Scanner scanner = new Scanner(path);
+        while (scanner.hasNextLine()) {
+            String task = scanner.nextLine();
+            String[] parts = task.split("\\s*\\|\\s*");
+            switch (parts[0]) {
+                case("T"):
+                    boolean isDone = parts[1].equals("X");
+                    String description = parts[2];
+                    this.taskList.add(new ToDo(isDone, description));
+                    break;
+                case("D"):
+                    isDone = parts[1].equals("X");
+                    description = parts[2];
+                    String deadline = parts[3];
+                    this.taskList.add(new Deadline(isDone, description, deadline));
+                    break;
+                case("E"):
+                    isDone = parts[1].equals("X");
+                    description = parts[2];
+                    String start = parts[3];
+                    String end = parts[4];
+                    this.taskList.add(new Event(isDone, description, start, end));
+                    break;
+            }
+        }
+        scanner.close();
+    }
+
+    public void saveFile() {
+        try {
+            FileWriter fileWriter = new FileWriter("data/tasklist.txt");
+            for (int i = 0; i < taskList.size(); i++) {
+                Task task = taskList.get(i);
+                fileWriter.append(task.toFileFormat());
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void bye() {
