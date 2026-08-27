@@ -1,3 +1,5 @@
+package linus.task;
+
 public abstract class Task {
     private boolean isDone;
     private String description;
