@@ -3,10 +3,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.lang.StringBuilder;
+import java.time.LocalDate;
 
 public class Linus {
     public static final String HORIZONTAL_LINE = "____________________________________________________________";
@@ -29,7 +31,7 @@ public class Linus {
         try {
             this.loadFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            this.echo(e.getMessage());
         }
     }
 
@@ -83,14 +85,17 @@ public class Linus {
             } else if (text.matches("^deadline .+ /by .+$")) {
                 int byIndex = text.indexOf(" /by");
                 String description = text.substring(9, byIndex);
-                String deadline = text.substring(byIndex + 5);
+                String deadlineText = text.substring(byIndex + 5);
+                LocalDate deadline = LocalDate.parse(deadlineText);
                 task = new Deadline(false, description, deadline);
             } else if (text.matches("^event .+ /from .+ /to .+$")) {
                 int fromIndex = text.indexOf(" /from");
                 int toIndex = text.indexOf(" /to");
                 String description = text.substring(6, fromIndex);
-                String start = text.substring(fromIndex + 7, toIndex);
-                String end = text.substring(toIndex + 5);
+                String startText = text.substring(fromIndex + 7, toIndex);
+                String endText = text.substring(toIndex + 5);
+                LocalDate start = LocalDate.parse(startText);
+                LocalDate end = LocalDate.parse(endText);
                 task = new Event(false, description, start, end);
             } else {
                 throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
@@ -102,6 +107,8 @@ public class Linus {
             output.append("Now you have " + this.taskList.size() + " tasks in the list.");
             this.echo(output.toString());
         } catch (InvalidTaskException e) {
+            this.echo(e.getMessage());
+        } catch (DateTimeException e) {
             this.echo(e.getMessage());
         }
     }
@@ -188,14 +195,17 @@ public class Linus {
                 case("D"):
                     isDone = parts[1].equals("X");
                     description = parts[2];
-                    String deadline = parts[3];
+                    String deadlineText = parts[3];
+                    LocalDate deadline = LocalDate.parse(deadlineText);
                     this.taskList.add(new Deadline(isDone, description, deadline));
                     break;
                 case("E"):
                     isDone = parts[1].equals("X");
                     description = parts[2];
-                    String start = parts[3];
-                    String end = parts[4];
+                    String startText = parts[3];
+                    String endText = parts[4];
+                    LocalDate start = LocalDate.parse(startText);
+                    LocalDate end = LocalDate.parse(endText);
                     this.taskList.add(new Event(isDone, description, start, end));
                     break;
             }
@@ -212,7 +222,7 @@ public class Linus {
             }
             fileWriter.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            this.echo(e.getMessage());
         }
     }
 
