@@ -1,3 +1,10 @@
+package linus;
+import linus.parser.Parser;
+import linus.storage.Storage;
+import linus.tasklist.TaskList;
+import linus.taskmanager.TaskManager;
+import linus.ui.Ui;
+
 import java.io.FileNotFoundException;
 
 public class Linus {

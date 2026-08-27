@@ -1,3 +1,12 @@
+package linus.storage;
+
+import linus.task.Deadline;
+import linus.task.Event;
+import linus.task.Task;
+import linus.task.ToDo;
+import linus.tasklist.TaskList;
+import linus.ui.Ui;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
