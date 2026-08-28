@@ -2,16 +2,35 @@ package linus.task;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a type of Task with a start and end date.
+ */
 public class Event extends Task {
+    /** Date that the event starts on */
     private LocalDate start;
+    /** Date that the event ends on */
     private LocalDate end;
 
+    /** Creates a new Event task.
+     *
+     * @param isDone Whether the task has been marked as completed.
+     * @param description Description of the task.
+     * @param start Date that the event starts on.
+     * @param end Date that the event ends on.
+     */
     public Event(boolean isDone, String description, LocalDate start, LocalDate end) {
         super(isDone, description);
         this.start = start;
         this.end = end;
     }
 
+    /**
+     * Returns a String representation of each Event task.
+     * All event tasks are represented starting with [E].
+     * Start and end are formatted as d MMM yyyy.
+     *
+     * @return String representation of each Event task.
+     */
     @Override
     public String toString() {
         String formattedStart = this.start.format(DateTimeFormatter.ofPattern("d MMM yyyy"));
@@ -19,6 +38,12 @@ public class Event extends Task {
         return "[E]" + super.toString() + " (from: " + formattedStart + " to: " + formattedEnd + ")";
     }
 
+    /**
+     * Returns a String representation of each Event task that
+     * is formatted for ease of storing into the storage file.
+     *
+     * @return Formatted String representation of Event task.
+     */
     @Override
     public String toFileFormat() {
         if (this.isDone()) {

@@ -17,9 +17,20 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+/**
+ * Represents the file stored on the local hard drive which corresponds
+ * to the TaskList.
+ */
+
 public class Storage {
     private final File file;
 
+    /**
+     * Creates the file to store the TaskList. If the file already exists,
+     * use the existing file.
+     *
+     * @param path the filepath of the file to be used as storage.
+     */
     public Storage (String path) {
         Path filepath = Paths.get(path);
         this.file = new File(path);
@@ -36,6 +47,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Load the tasks in the storage file into the TaskList.
+     *
+     * @return TaskList of Tasks corresponding to the local storage tasklist
+     * file.
+     * @throws FileNotFoundException If the local storage tasklist cannot be
+     * found.
+     */
     public TaskList loadFile() throws FileNotFoundException {
         Scanner scanner = new Scanner(this.file);
         TaskList taskList = new TaskList();
@@ -66,6 +85,11 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Save the Tasks from the TaskList into the local storage tasklist.
+     *
+     * @param taskList The collection of Task objects.
+     */
     public void saveFile(TaskList taskList) {
         try {
             FileWriter fileWriter = new FileWriter(this.file);
