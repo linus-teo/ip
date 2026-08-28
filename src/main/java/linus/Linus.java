@@ -7,17 +7,27 @@ import linus.ui.Ui;
 
 import java.io.FileNotFoundException;
 
+/**
+ * Represents the Linus chatbot which orchastrates the logical flow.
+ */
 public class Linus {
     private Ui ui;
     private Parser parser;
     private TaskManager taskManager;
     private Storage storage;
 
-    public static void main(String[] args) {
+    /**
+     * Creates and starts up the chatbot.
+     */
+    public static void main() {
         Linus chatbot = new Linus("data/tasklist.txt");
         chatbot.run();
     }
 
+    /**
+     * Starts up the chatbot by loading the Ui and scanning
+     * for user input to execute commands.
+     */
     public void run() {
         Ui.hello();
         while (true) {
@@ -31,6 +41,13 @@ public class Linus {
         Ui.bye();
     }
 
+    /**
+     * Creates a new Linus chatbot.
+     * Constructs the Ui, Parser, Storage, TaskList and TaskManager for
+     * the Linus chatbot.
+     *
+     * @param filePath Path that the storage file is located.
+     */
     public Linus(String filePath) {
         this.ui = new Ui();
         this.parser = new Parser();
