@@ -13,7 +13,7 @@ public abstract class Task {
      * @param isDone Whether the task has been marked as completed.
      * @param description Description of the task.
      */
-    public Task (boolean isDone, String description) {
+    public Task(boolean isDone, String description) {
         this.isDone = isDone;
         this.description = description;
     }

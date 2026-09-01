@@ -1,5 +1,8 @@
 package linus.taskmanager;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+
 import linus.invalidtaskexception.InvalidTaskException;
 import linus.storage.Storage;
 import linus.task.Deadline;
@@ -8,9 +11,6 @@ import linus.task.Task;
 import linus.task.ToDo;
 import linus.tasklist.TaskList;
 import linus.ui.Ui;
-
-import java.time.DateTimeException;
-import java.time.LocalDate;
 
 /**
  * Represents a controller that manages and edits the tasklist.
@@ -32,12 +32,12 @@ public class TaskManager {
 
     /**
      * Executes the action on the TaskList based on the given command and input.
+     * If the chatbot receives the "bye" command, chatbot should terminate, method returns true.
+     * If the chatbot receives any other command, chatbot should continue receiving input, method returns false.
      *
      * @param command The action to be taken by the TaskManager.
      * @param input The plaintext input from the user which contains further information about the action.
      * @return Whether the chatbot should terminate after executing the action.
-     * If the chatbot receives the "bye" command, chatbot should terminate, method returns true.
-     * If the chatbot receives any other command, chatbot should continue receiving input, method returns false.
      */
     public boolean execute(String command, String input) {
         switch (input) {
@@ -46,6 +46,8 @@ public class TaskManager {
             case "list":
                 this.listAll();
                 return false;
+            default:
+                break;
         }
         switch (command) {
             case "mark":
@@ -151,7 +153,7 @@ public class TaskManager {
      *
      * @param input The plaintext input from the user.
      */
-    public void find (String input) {
+    public void find(String input) {
         String keyword = input.substring(5);
         StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
         for (int i = 0; i < taskList.size(); i++) {
@@ -176,8 +178,7 @@ public class TaskManager {
         try {
             if (text.matches("^todo\\s*$")) {
                 throw new InvalidTaskException("OOPS!!! The description of a todo cannot be empty.");
-            }
-            else if (text.matches("^todo .*$")) {
+            } else if (text.matches("^todo .*$")) {
                 String description = text.substring(5);
                 task = new ToDo(false, description);
             } else if (text.matches("^deadline .+ /by .+$")) {

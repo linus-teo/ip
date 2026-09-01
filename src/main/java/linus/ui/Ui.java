@@ -31,8 +31,8 @@ public class Ui {
      * chatbot.
      */
     public static void hello() {
-        Ui.echo(Ui.BANNER +
-                "\nHello! My name is Linus.\nHow may I help you today?");
+        Ui.echo(Ui.BANNER
+                + "\nHello! My name is Linus.\nHow may I help you today?");
     }
 
     /**

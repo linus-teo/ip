@@ -3,7 +3,7 @@ package linus.task;
 /**
  * Represents a type of Task that is to be done.
  */
-public class ToDo extends Task{
+public class ToDo extends Task {
     /**
      * Creates a Todo Task.
      *

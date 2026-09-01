@@ -1,11 +1,12 @@
 package linus.taskmanager;
 
-import linus.storage.Storage;
-import linus.tasklist.TaskList;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import linus.storage.Storage;
+import linus.tasklist.TaskList;
 
 public class TaskManagerTest {
     @Test

@@ -12,7 +12,8 @@ public class Event extends Task {
     /** Date that the event ends on */
     private LocalDate end;
 
-    /** Creates a new Event task.
+    /**
+     * Creates a new Event task.
      *
      * @param isDone Whether the task has been marked as completed.
      * @param description Description of the task.

@@ -10,7 +10,8 @@ public class Deadline extends Task {
     /** The date the task is to be completed by. */
     private LocalDate deadline;
 
-    /** Creates a new Deadline task.
+    /**
+     * Creates a new Deadline task.
      *
      * @param isDone Whether the task has been marked as completed.
      * @param description Description of the task.
