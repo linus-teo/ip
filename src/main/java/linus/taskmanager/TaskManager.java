@@ -39,6 +39,9 @@ public class TaskManager {
             case "delete":
                 this.delete(input);
                 return false;
+            case "find":
+                this.find(input);
+                return false;
             case "todo":
             case "deadline":
             case "event":
@@ -106,6 +109,20 @@ public class TaskManager {
         Ui.echo(output.toString());
     }
 
+    public void find (String input) {
+        String keyword = input.substring(5);
+        StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            if (currentTask.getDescription().contains(keyword)) {
+                string.append("\n");
+                string.append(i + 1);
+                string.append(". ");
+                string.append(this.taskList.get(i));
+            }
+        }
+        Ui.echo(string.toString());
+    }
     public void addToList(String text) {
         Task task;
         try {
