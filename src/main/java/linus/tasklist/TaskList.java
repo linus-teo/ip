@@ -1,9 +1,9 @@
 package linus.tasklist;
 
-import linus.task.Task;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import linus.task.Task;
 
 /**
  * Represents a list of tasks entered by the user.

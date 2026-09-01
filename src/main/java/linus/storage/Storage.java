@@ -1,12 +1,5 @@
 package linus.storage;
 
-import linus.task.Deadline;
-import linus.task.Event;
-import linus.task.Task;
-import linus.task.ToDo;
-import linus.tasklist.TaskList;
-import linus.ui.Ui;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -16,6 +9,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Scanner;
+
+import linus.task.Deadline;
+import linus.task.Event;
+import linus.task.Task;
+import linus.task.ToDo;
+import linus.tasklist.TaskList;
+import linus.ui.Ui;
 
 /**
  * Represents the file stored on the local hard drive which corresponds
@@ -30,7 +30,7 @@ public class Storage {
      *
      * @param path The filepath of the file to be used as storage.
      */
-    public Storage (String path) {
+    public Storage(String path) {
         Path filepath = Paths.get(path);
         this.file = new File(path);
         if (!this.file.exists()) {
@@ -49,10 +49,8 @@ public class Storage {
     /**
      * Load the tasks in the storage file into the TaskList.
      *
-     * @return Tasklist of tasks corresponding to the local storage tasklist
-     * file.
-     * @throws FileNotFoundException If the local storage tasklist cannot be
-     * found.
+     * @return Tasklist of tasks corresponding to the local storage tasklist file.
+     * @throws FileNotFoundException If the local storage tasklist cannot be found.
      */
     public TaskList loadFile() throws FileNotFoundException {
         Scanner scanner = new Scanner(this.file);
@@ -77,6 +75,8 @@ public class Storage {
                     LocalDate start = LocalDate.parse(startText);
                     LocalDate end = LocalDate.parse(endText);
                     taskList.add(new Event(isDone, description, start, end));
+                    break;
+                default:
                     break;
             }
         }
