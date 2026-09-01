@@ -57,6 +57,9 @@ public class TaskManager {
             case "delete":
                 this.delete(input);
                 return false;
+            case "find":
+                this.find(input);
+                return false;
             case "todo":
             case "deadline":
             case "event":
@@ -141,6 +144,26 @@ public class TaskManager {
         output.append(task).append("\n");
         output.append("Now you have " + this.taskList.size() + " tasks in the list.");
         Ui.echo(output.toString());
+    }
+
+    /**
+     * Search the TaskList to find tasks with the specified keyword in the task description.
+     *
+     * @param input The plaintext input from the user.
+     */
+    public void find (String input) {
+        String keyword = input.substring(5);
+        StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            if (currentTask.getDescription().contains(keyword)) {
+                string.append("\n");
+                string.append(i + 1);
+                string.append(". ");
+                string.append(this.taskList.get(i));
+            }
+        }
+        Ui.echo(string.toString());
     }
 
     /**
