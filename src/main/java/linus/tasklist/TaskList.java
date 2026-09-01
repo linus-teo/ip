@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a List of Task entered by the user.
+ * Represents a list of tasks entered by the user.
  */
 public class TaskList {
     private final List<Task> taskList;

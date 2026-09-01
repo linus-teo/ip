@@ -12,15 +12,33 @@ import linus.ui.Ui;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+/**
+ * Represents a controller that manages and edits the tasklist.
+ */
 public class TaskManager {
     private final TaskList taskList;
     private final Storage storage;
 
+    /**
+     * Creates a new TaskManager.
+     *
+     * @param taskList TaskList to be managed by the TaskManager.
+     * @param storage Local hard drive storage location of the TaskList.
+     */
     public TaskManager(TaskList taskList, Storage storage) {
         this.taskList = taskList;
         this.storage = storage;
     }
 
+    /**
+     * Executes the action on the TaskList based on the given command and input.
+     *
+     * @param command The action to be taken by the TaskManager.
+     * @param input The plaintext input from the user which contains further information about the action.
+     * @return Whether the chatbot should terminate after executing the action.
+     * If the chatbot receives the "bye" command, chatbot should terminate, method returns true.
+     * If the chatbot receives any other command, chatbot should continue receiving input, method returns false.
+     */
     public boolean execute(String command, String input) {
         switch (input) {
             case "bye":
@@ -50,6 +68,10 @@ public class TaskManager {
         }
     }
 
+    /**
+     * Lists all the tasks in the TaskList.
+     * Prints the String representation of each task in the TaskList to the command line.
+     */
     public void listAll() {
         StringBuilder string = new StringBuilder("Here are the tasks in your list: ");
         int length = this.taskList.size();
@@ -62,6 +84,11 @@ public class TaskManager {
         Ui.echo(string.toString());
     }
 
+    /**
+     * Marks the selected task as completed.
+     *
+     * @param input The plaintext String input from the user.
+     */
     public void mark(String input) {
         double position = Double.parseDouble(input.substring(5));
         if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
@@ -76,6 +103,11 @@ public class TaskManager {
         Ui.echo(output);
     }
 
+    /**
+     * Marks the selected task as not completed.
+     *
+     * @param input The plaintext input from the user.
+     */
     public void unmark(String input) {
         double position = Double.parseDouble(input.substring(7));
         if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
@@ -90,6 +122,11 @@ public class TaskManager {
         Ui.echo(output);
     }
 
+    /**
+     * Deletes the selected task from the TaskList.
+     *
+     * @param input The plaintext input from the user.
+     */
     public void delete(String input) {
         double position = Double.parseDouble(input.substring(7));
         if (position < 1 || position > this.taskList.size() || position != Math.floor(position)) {
@@ -106,6 +143,11 @@ public class TaskManager {
         Ui.echo(output.toString());
     }
 
+    /**
+     * Adds the specified task to the TaskList.
+     *
+     * @param text The plaintext input from the user.
+     */
     public void addToList(String text) {
         Task task;
         try {

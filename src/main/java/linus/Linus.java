@@ -8,7 +8,7 @@ import linus.ui.Ui;
 import java.io.FileNotFoundException;
 
 /**
- * Represents the Linus chatbot which orchastrates the logical flow.
+ * Represents the Linus chatbot which orchestrates the logical flow.
  */
 public class Linus {
     private Ui ui;

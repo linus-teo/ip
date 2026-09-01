@@ -21,7 +21,6 @@ import java.util.Scanner;
  * Represents the file stored on the local hard drive which corresponds
  * to the TaskList.
  */
-
 public class Storage {
     private final File file;
 
@@ -29,7 +28,7 @@ public class Storage {
      * Creates the file to store the TaskList. If the file already exists,
      * use the existing file.
      *
-     * @param path the filepath of the file to be used as storage.
+     * @param path The filepath of the file to be used as storage.
      */
     public Storage (String path) {
         Path filepath = Paths.get(path);
@@ -50,7 +49,7 @@ public class Storage {
     /**
      * Load the tasks in the storage file into the TaskList.
      *
-     * @return TaskList of Tasks corresponding to the local storage tasklist
+     * @return Tasklist of tasks corresponding to the local storage tasklist
      * file.
      * @throws FileNotFoundException If the local storage tasklist cannot be
      * found.
@@ -64,15 +63,15 @@ public class Storage {
             boolean isDone = parts[1].equals("X");
             String description = parts[2];
             switch (parts[0]) {
-                case ("T"):
+                case "T":
                     taskList.add(new ToDo(isDone, description));
                     break;
-                case ("D"):
+                case "D":
                     String deadlineText = parts[3];
                     LocalDate deadline = LocalDate.parse(deadlineText);
                     taskList.add(new Deadline(isDone, description, deadline));
                     break;
-                case ("E"):
+                case "E":
                     String startText = parts[3];
                     String endText = parts[4];
                     LocalDate start = LocalDate.parse(startText);
@@ -86,7 +85,7 @@ public class Storage {
     }
 
     /**
-     * Save the Tasks from the TaskList into the local storage tasklist.
+     * Save the tasks from the TaskList into the local storage tasklist.
      *
      * @param taskList The collection of Task objects.
      */
