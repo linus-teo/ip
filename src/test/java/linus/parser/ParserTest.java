@@ -1,19 +1,24 @@
 package linus.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import linus.invalidtaskexception.InvalidTaskException;
+
 public class ParserTest {
     @Test
-    public void parse_validCommand_commandReturned() {
+    public void parse_byeCommand_byeReturned() throws InvalidTaskException {
         Parser parser = new Parser();
-        assertEquals("todo", parser.parse("todo test code"));
+        assertEquals(List.of("bye"), parser.parse("bye"));
     }
 
     @Test
-    public void parse_invalidCommand_invalidcommandReturned() {
+    public void parse_invalidCommand_exceptionThrown() throws InvalidTaskException {
         Parser parser = new Parser();
-        assertEquals("deadline!", parser.parse("deadline! finish increment /by 2026-08-28"));
+        assertThrows(InvalidTaskException.class, () -> parser.parse("deadline! finish increment /by 2026-08-28"));
     }
 }

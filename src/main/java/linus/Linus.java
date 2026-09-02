@@ -1,13 +1,15 @@
 package linus;
 
-import java.io.FileNotFoundException;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
+import linus.executor.Executor;
+import linus.invalidtaskexception.InvalidTaskException;
 import linus.parser.Parser;
 import linus.storage.Storage;
-import linus.tasklist.TaskList;
-import linus.taskmanager.TaskManager;
+import linus.task.Task;
 import linus.ui.Ui;
-
+import linus.validator.Validator;
 
 
 /**
@@ -16,7 +18,8 @@ import linus.ui.Ui;
 public class Linus {
     private Ui ui;
     private Parser parser;
-    private TaskManager taskManager;
+    private Validator validator;
+    private Executor executor;
     private Storage storage;
 
     /**
@@ -30,13 +33,9 @@ public class Linus {
         this.ui = new Ui();
         this.parser = new Parser();
         this.storage = new Storage(filePath);
-        try {
-            TaskList taskList = this.storage.loadFile();
-            this.taskManager = new TaskManager(taskList, this.storage);
-        } catch (FileNotFoundException e) {
-            Ui.echo("OOPS!!! Unable to load tasklist file.");
-            this.taskManager = new TaskManager(new TaskList(), this.storage);
-        }
+        List<Task> taskList = this.storage.loadFile();
+        this.validator = new Validator(taskList);
+        this.executor = new Executor(taskList, this.storage);
     }
 
     /**
@@ -55,10 +54,19 @@ public class Linus {
         Ui.hello();
         while (true) {
             String input = this.ui.read();
-            String command = this.parser.parse(input);
-            boolean isBye = this.taskManager.execute(command, input);
-            if (isBye) {
-                break;
+            try {
+                List<String> parsedInput = this.parser.parse(input);
+                if (parsedInput.equals(List.of("bye"))) {
+                    break;
+                }
+                this.validator.validate(parsedInput);
+                this.executor.execute(parsedInput);
+            } catch (InvalidTaskException e) {
+                Ui.echo(e.getMessage());
+            } catch (NumberFormatException e) {
+                Ui.echo("OOPS!!! Please enter a valid task ID :-(");
+            } catch (DateTimeParseException e) {
+                Ui.echo("OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(");
             }
         }
         Ui.bye();

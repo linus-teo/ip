@@ -8,13 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import linus.task.Deadline;
 import linus.task.Event;
 import linus.task.Task;
 import linus.task.ToDo;
-import linus.tasklist.TaskList;
 import linus.ui.Ui;
 
 /**
@@ -50,37 +51,40 @@ public class Storage {
      * Load the tasks in the storage file into the TaskList.
      *
      * @return Tasklist of tasks corresponding to the local storage tasklist file.
-     * @throws FileNotFoundException If the local storage tasklist cannot be found.
      */
-    public TaskList loadFile() throws FileNotFoundException {
-        Scanner scanner = new Scanner(this.file);
-        TaskList taskList = new TaskList();
-        while (scanner.hasNextLine()) {
-            String task = scanner.nextLine();
-            String[] parts = task.split("\\s*\\|\\s*");
-            boolean isDone = parts[1].equals("X");
-            String description = parts[2];
-            switch (parts[0]) {
-                case "T":
-                    taskList.add(new ToDo(isDone, description));
-                    break;
-                case "D":
-                    String deadlineText = parts[3];
-                    LocalDate deadline = LocalDate.parse(deadlineText);
-                    taskList.add(new Deadline(isDone, description, deadline));
-                    break;
-                case "E":
-                    String startText = parts[3];
-                    String endText = parts[4];
-                    LocalDate start = LocalDate.parse(startText);
-                    LocalDate end = LocalDate.parse(endText);
-                    taskList.add(new Event(isDone, description, start, end));
-                    break;
-                default:
-                    break;
+    public List<Task> loadFile() {
+        List<Task> taskList = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(this.file);
+            while (scanner.hasNextLine()) {
+                String task = scanner.nextLine();
+                String[] parts = task.split("\\s*\\|\\s*");
+                boolean isDone = parts[1].equals("X");
+                String description = parts[2];
+                switch (parts[0]) {
+                    case "T":
+                        taskList.add(new ToDo(isDone, description));
+                        break;
+                    case "D":
+                        String deadlineText = parts[3];
+                        LocalDate deadline = LocalDate.parse(deadlineText);
+                        taskList.add(new Deadline(isDone, description, deadline));
+                        break;
+                    case "E":
+                        String startText = parts[3];
+                        String endText = parts[4];
+                        LocalDate start = LocalDate.parse(startText);
+                        LocalDate end = LocalDate.parse(endText);
+                        taskList.add(new Event(isDone, description, start, end));
+                        break;
+                    default:
+                        break;
+                }
             }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            Ui.echo("OOPS!!! Unable to open and load the tasklist file.");
         }
-        scanner.close();
         return taskList;
     }
 
@@ -89,7 +93,7 @@ public class Storage {
      *
      * @param taskList The collection of Task objects.
      */
-    public void saveFile(TaskList taskList) {
+    public void saveFile(List<Task> taskList) {
         try {
             FileWriter fileWriter = new FileWriter(this.file);
             for (int i = 0; i < taskList.size(); i++) {
