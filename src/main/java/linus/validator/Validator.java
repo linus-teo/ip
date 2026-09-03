@@ -18,7 +18,7 @@ public class Validator {
     /**
      * Creates a new Validator to validate input.
      *
-     * @param taskList List of tasks it validates input against.
+     * @param taskList List of tasks to validate input against.
      */
     public Validator(List<Task> taskList) {
         this.taskList = taskList;

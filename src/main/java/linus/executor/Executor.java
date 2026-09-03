@@ -13,17 +13,17 @@ import linus.ui.Ui;
 import linus.validator.Validator;
 
 /**
- * Represents a controller that manages and edits the tasklist.
+ * Represents an executor that carries out specified actions on a tasklist.
  */
 public class Executor {
     private final List<Task> taskList;
     private final Storage storage;
 
     /**
-     * Creates a new TaskManager.
+     * Creates a new Executor.
      *
-     * @param taskList TaskList to be managed by the TaskManager.
-     * @param storage Local hard drive storage location of the TaskList.
+     * @param taskList The tasklist to be actioned on by the executor.
+     * @param storage Local hard drive storage location of the tasklist.
      */
     public Executor(List<Task> taskList, Storage storage) {
         this.taskList = taskList;
@@ -33,8 +33,8 @@ public class Executor {
     /**
      * Executes the action based on the command from user input.
      *
-     * @param parsedInput Parsed user input from Parser.
-     * @throws InvalidTaskException If addTask() does not recognise input, throw InvalidTaskException
+     * @param parsedInput Parsed user input from the parser.
+     * @throws InvalidTaskException If addTask() does not recognise input, throw InvalidTaskException.
      */
     public void execute(List<String> parsedInput) throws InvalidTaskException {
         String command = parsedInput.getFirst();
@@ -64,8 +64,8 @@ public class Executor {
         }
     }
     /**
-     * Lists all the tasks in the TaskList.
-     * Prints the String representation of each task in the TaskList to the command line.
+     * Lists all the tasks in the tasklist.
+     * Prints the String representation of each task in the tasklist to the command line.
      */
     public void listAll() {
         StringBuilder string = new StringBuilder("Here are the tasks in your list: ");
@@ -82,7 +82,7 @@ public class Executor {
     /**
      * Marks the selected task as completed.
      *
-     * @param position The plaintext String input from the user.
+     * @param position The task number to be marked as completed.
      */
     public void mark(int position) {
         int taskId = position - 1;
@@ -96,7 +96,7 @@ public class Executor {
     /**
      * Marks the selected task as not completed.
      *
-     * @param position The plaintext input from the user.
+     * @param position The task number to be marked as incomplete.
      */
     public void unmark(int position) {
         int taskId = position - 1;
@@ -108,9 +108,9 @@ public class Executor {
     }
 
     /**
-     * Deletes the selected task from the TaskList.
+     * Deletes the selected task from the tasklist.
      *
-     * @param position The plaintext input from the user.
+     * @param position The task number to be deleted from the task list.
      */
     public void delete(int position) {
         int taskId = position - 1;
@@ -123,9 +123,9 @@ public class Executor {
     }
 
     /**
-     * Search the TaskList to find tasks with the specified keyword in the task description.
+     * Search the tasklist to find tasks with the specified keyword in the task description.
      *
-     * @param keyword The plaintext input from the user.
+     * @param keyword The string to search for in the task description of all tasks.
      */
     public void find(String keyword) {
         StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
@@ -144,7 +144,9 @@ public class Executor {
     /**
      * Adds the specified task to the TaskList.
      *
-     * @param command The plaintext input from the user.
+     * @param command The string that describes which type of task to add.
+     * @param parsedInput The parsed plaintext input from the user.
+     * @throws InvalidTaskException If the command is not recognised. Should not reach this point.
      */
     public void addTask(String command, List<String> parsedInput) throws InvalidTaskException {
         String description = parsedInput.get(1);
@@ -163,6 +165,7 @@ public class Executor {
                 task = new Event(false, description, startDate, endDate);
                 break;
             default:
+                // Should not be reached.
                 throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
         this.taskList.add(task);

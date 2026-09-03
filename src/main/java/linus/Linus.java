@@ -24,8 +24,7 @@ public class Linus {
 
     /**
      * Creates a new Linus chatbot.
-     * Constructs the Ui, Parser, Storage, TaskList and TaskManager for
-     * the Linus chatbot.
+     * Constructs the Ui, Parser, Validator, Executor and Storage for the Linus chatbot.
      *
      * @param filePath Path that the storage file is located.
      */
