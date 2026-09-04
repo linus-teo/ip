@@ -36,6 +36,14 @@ public class Ui {
     }
 
     /**
+     * Gets the standard welcome message for the GUI to display when app starts.
+     *
+     * @return Standard welcome message of the chatbot.
+     */
+    public static String gethello() {
+        return "Hello! My name is Linus.\nHow may I help you today?";
+    }
+    /**
      * Reads the next line of user input using the scanner.
      *
      * @return Input from command line from user.
