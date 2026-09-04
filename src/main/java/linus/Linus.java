@@ -59,7 +59,8 @@ public class Linus {
                     break;
                 }
                 this.validator.validate(parsedInput);
-                this.executor.execute(parsedInput);
+                String response = this.executor.execute(parsedInput);
+                Ui.echo(response);
             } catch (InvalidTaskException e) {
                 Ui.echo(e.getMessage());
             } catch (NumberFormatException e) {
@@ -69,5 +70,30 @@ public class Linus {
             }
         }
         Ui.bye();
+    }
+
+    /**
+     * Generates a response for the user's chat message.
+     * Method is meant to be used for GUI display.
+     *
+     * @param input The plaintext String input from the user.
+     * @return Response message after attempting to execute command.
+     */
+    public String getResponse(String input) {
+        try {
+            List<String> parsedInput = this.parser.parse(input);
+            if (parsedInput.equals(List.of("bye"))) {
+                return input;
+            }
+            this.validator.validate(parsedInput);
+            String response = this.executor.execute(parsedInput);
+            return response;
+        } catch (InvalidTaskException e) {
+            return e.getMessage();
+        } catch (NumberFormatException e) {
+            return "OOPS!!! Please enter a valid task ID :-(";
+        } catch (DateTimeParseException e) {
+            return "OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(";
+        }
     }
 }

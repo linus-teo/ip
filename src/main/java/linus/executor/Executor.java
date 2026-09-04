@@ -35,39 +35,37 @@ public class Executor {
      *
      * @param parsedInput Parsed user input from the parser.
      * @throws InvalidTaskException If addTask() does not recognise input, throw InvalidTaskException.
+     * @return Message that describes the status of the execution of the command.
      */
-    public void execute(List<String> parsedInput) throws InvalidTaskException {
+    public String execute(List<String> parsedInput) throws InvalidTaskException {
         String command = parsedInput.getFirst();
         switch (command) {
             case "list":
-                this.listAll();
-                break;
+                return this.listAll();
             case "mark":
-                this.mark(Integer.parseInt(parsedInput.getLast()));
-                break;
+                return this.mark(Integer.parseInt(parsedInput.getLast()));
             case "unmark":
-                this.unmark(Integer.parseInt(parsedInput.getLast()));
-                break;
+                return this.unmark(Integer.parseInt(parsedInput.getLast()));
             case "delete":
-                this.delete(Integer.parseInt(parsedInput.getLast()));
-                break;
+                return this.delete(Integer.parseInt(parsedInput.getLast()));
             case "find":
-                this.find(parsedInput.getLast());
-                break;
+                return this.find(parsedInput.getLast());
             case "todo":
             case "deadline":
             case "event":
-                this.addTask(command, parsedInput);
-                break;
+                return this.addTask(command, parsedInput);
             default:
-                break;
+                // Should not reach here
+                return "Unknown command could not be executed";
         }
     }
+
     /**
      * Lists all the tasks in the tasklist.
-     * Prints the String representation of each task in the tasklist to the command line.
+     *
+     * @return String representation of all tasks in the tasklist.
      */
-    public void listAll() {
+    public String listAll() {
         StringBuilder string = new StringBuilder("Here are the tasks in your list: ");
         int length = this.taskList.size();
         for (int i = 0; i < length; i++) {
@@ -76,58 +74,62 @@ public class Executor {
             string.append(". ");
             string.append(this.taskList.get(i));
         }
-        Ui.echo(string.toString());
+        return string.toString();
     }
 
     /**
      * Marks the selected task as completed.
      *
      * @param position The task number to be marked as completed.
+     * @return Message to indicate successful marking of task.
      */
-    public void mark(int position) {
+    public String mark(int position) {
         int taskId = position - 1;
         Task task = this.taskList.get(taskId);
         task.mark();
         this.storage.saveFile(this.taskList);
         String output = "Nice! I've marked this task as done: \n" + task;
-        Ui.echo(output);
+        return output;
     }
 
     /**
      * Marks the selected task as not completed.
      *
      * @param position The task number to be marked as incomplete.
+     * @return Message to indicate successful unmarking of task.
      */
-    public void unmark(int position) {
+    public String unmark(int position) {
         int taskId = position - 1;
         Task task = this.taskList.get(taskId);
         task.unmark();
         this.storage.saveFile(this.taskList);
         String output = "OK, I've marked this task as not done yet: \n" + task;
-        Ui.echo(output);
+        return output;
     }
 
     /**
      * Deletes the selected task from the tasklist.
      *
      * @param position The task number to be deleted from the task list.
+     * @return Message to indicate successful deletion of task.
      */
-    public void delete(int position) {
+    public String delete(int position) {
         int taskId = position - 1;
         Task task = this.taskList.get(taskId);
         this.taskList.remove(task);
         this.storage.saveFile(this.taskList);
         StringBuilder output = new StringBuilder("Noted. I've removed this task: \n");
         output.append(task).append("\nNow you have " + this.taskList.size() + " tasks in the list.");
-        Ui.echo(output.toString());
+        return output.toString();
     }
 
     /**
      * Search the tasklist to find tasks with the specified keyword in the task description.
      *
      * @param keyword The string to search for in the task description of all tasks.
+     * @return Message containing all the tasks whose description contains keyword.
      */
-    public void find(String keyword) {
+    public String find(String keyword) {
         StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
         for (int i = 0; i < taskList.size(); i++) {
             Task currentTask = taskList.get(i);
@@ -138,7 +140,7 @@ public class Executor {
                 string.append(this.taskList.get(i));
             }
         }
-        Ui.echo(string.toString());
+        return string.toString();
     }
 
     /**
@@ -147,8 +149,9 @@ public class Executor {
      * @param command The string that describes which type of task to add.
      * @param parsedInput The parsed plaintext input from the user.
      * @throws InvalidTaskException If the command is not recognised. Should not reach this point.
+     * @return Message to indicate successful addition of the task.
      */
-    public void addTask(String command, List<String> parsedInput) throws InvalidTaskException {
+    public String addTask(String command, List<String> parsedInput) throws InvalidTaskException {
         String description = parsedInput.get(1);
         Task task;
         switch (command) {
@@ -172,6 +175,6 @@ public class Executor {
         this.storage.saveFile(this.taskList);
         String output = "Got it. I've added this task: \n" + task + "\n"
                 + "Now you have " + this.taskList.size() + " tasks in the list.";
-        Ui.echo(output);
+        return output;
     }
 }
