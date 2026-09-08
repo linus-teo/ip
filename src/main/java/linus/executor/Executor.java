@@ -2,6 +2,8 @@ package linus.executor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import linus.invalidtaskexception.InvalidTaskException;
 import linus.storage.Storage;
@@ -72,16 +74,12 @@ public class Executor {
      * @return String representation of all tasks in the tasklist.
      */
     public String listAll() {
-        assert this.taskList != null : "The tasklist to be listed is null";
-        StringBuilder string = new StringBuilder("Here are the tasks in your list: ");
-        int length = this.taskList.size();
-        for (int i = 0; i < length; i++) {
-            string.append("\n");
-            string.append(i + 1);
-            string.append(". ");
-            string.append(this.taskList.get(i));
-        }
-        return string.toString();
+        return IntStream.range(0, this.taskList.size())
+                .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
+                .reduce(
+                        "Here are the tasks in your list:",
+                        (result, task) -> result + "\n" + task
+                );
     }
 
     /**
@@ -146,19 +144,13 @@ public class Executor {
      * @return Message containing all the tasks whose description contains keyword.
      */
     public String find(String keyword) {
-        assert this.taskList != null : "The tasklist is null and has not been initialised";
-        StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
-        for (int i = 0; i < this.taskList.size(); i++) {
-            Task currentTask = this.taskList.get(i);
-            assert currentTask != null : "The current task to be searched for the keyword is null";
-            if (currentTask.getDescription().contains(keyword)) {
-                string.append("\n");
-                string.append(i + 1);
-                string.append(". ");
-                string.append(this.taskList.get(i));
-            }
-        }
-        return string.toString();
+        return IntStream.range(0, this.taskList.size())
+                .filter(i -> this.taskList.get(i).getDescription().contains(keyword))
+                .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
+                .reduce(
+                        "Here are the matching tasks in your list:",
+                        (result, task) -> result + "\n" + task
+                );
     }
 
     /**
