@@ -3,50 +3,36 @@ package linus.ui;
 import java.util.Scanner;
 
 /**
- * Represents the frontend of the Linus chatbot.
- * Responsible for printing output to the interface.
+ * Represents the command line user interface of the Linus chatbot.
+ * Responsible for printing output to the user interface.
  */
 public class Ui {
-    /** Horizontal Line Divider */
-    public static final String HORIZONTAL_LINE = "____________________________________________________________";
-    /** Custom Banner for the Linus chatbot */
-    public static final String BANNER = " _     _                 \n"
+    /** Horizontal line divider. */
+    private static final String HORIZONTAL_LINE = "____________________________________________________________";
+    /** Custom banner for the Linus chatbot. */
+    private static final String BANNER = " _     _                 \n"
             + "| |   (_)_ __  _   _ ___ \n"
             + "| |   | | '_ \\| | | / __|\n"
             + "| |___| | | | | |_| \\__ \\\n"
             + "|_____|_|_| |_|\\__,_|___/\n";
-    /** Scanner to scan input from command line */
+    /** Standard welcome message. */
+    private static final String HELLO_MESSAGE = "Hello! My name is Linus.\nHow may I help you today?";
+    /** Standard goodbye message. */
+    private static final String BYE_MESSAGE = "Bye! Hope to see you again soon!";
+    /** Scanner to read user input from the command line. */
     private final Scanner scanner;
 
     /**
-     * Creates both a new Ui for the chatbot and the scanner
-     * to receive the user input.
+     * Initialises both a new Ui for the chatbot and the scanner to receive the user input.
      */
     public Ui() {
         this.scanner = new Scanner(System.in);
     }
 
     /**
-     * Prints the default welcome message when starting the Linus
-     * chatbot.
-     */
-    public static void hello() {
-        Ui.echo(Ui.BANNER
-                + "\nHello! My name is Linus.\nHow may I help you today?");
-    }
-
-    /**
-     * Gets the standard welcome message for the GUI to display when app starts.
-     *
-     * @return Standard welcome message of the chatbot.
-     */
-    public static String getHello() {
-        return "Hello! My name is Linus.\nHow may I help you today?";
-    }
-    /**
      * Reads the next line of user input using the scanner.
      *
-     * @return Input from command line from user.
+     * @return Input text from command line entered by user.
      */
     public String read() {
         assert this.scanner != null : "Scanner has not been initialised";
@@ -54,20 +40,35 @@ public class Ui {
     }
 
     /**
+     * Prints the default welcome message when the Linus chatbot starts.
+     */
+    public static void sayHello() {
+        Ui.display(Ui.BANNER + "\n" + Ui.HELLO_MESSAGE);
+    }
+
+    /**
+     * Returns the standard welcome message for the GUI to display when the Linus chatbot starts.
+     *
+     * @return Standard welcome message of the chatbot.
+     */
+    public static String getHelloMessage() {
+        return Ui.HELLO_MESSAGE;
+    }
+
+    /**
      * Prints the default goodbye message when the user exits.
      */
-    public static void bye() {
-        Ui.echo("Bye! Hope to see you again soon!");
+    public static void sayBye() {
+        Ui.display(Ui.BYE_MESSAGE);
     }
 
     /**
      * Prints the input text to the command line.
-     * Formatted with horizontal line above and below for spacing.
+     * Formats input text with horizontal line above and below for spacing.
      *
      * @param text Text to be printed to the screen.
      */
-    public static void echo(String text) {
-        assert text != null : "No text provided to print to command line.";
+    public static void display(String text) {
         System.out.println(Ui.HORIZONTAL_LINE);
         System.out.println(text);
         System.out.println(Ui.HORIZONTAL_LINE);

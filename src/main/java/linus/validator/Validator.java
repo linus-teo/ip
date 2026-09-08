@@ -13,6 +13,7 @@ import linus.task.Task;
  */
 public class Validator {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final List<Task> taskList;
 
     /**
@@ -28,8 +29,8 @@ public class Validator {
      * Validate that the parsed input follows business rules.
      *
      * @param parsedInput Parsed input from Parser.
-     * @throws InvalidTaskException If description is blank.
-     * @throws NumberFormatException If number is negative, 0 or larger than size of tasklist.
+     * @throws InvalidTaskException If description is blank or task number is negative, 0 or larger than tasklist size.
+     * @throws NumberFormatException If the task ID is not a valid integer.
      * @throws DateTimeParseException If date does not follow yyyy-MM-dd format.
      */
     public void validate(List<String> parsedInput) throws InvalidTaskException, NumberFormatException,
@@ -38,6 +39,8 @@ public class Validator {
         assert !parsedInput.isEmpty() : "No parsed input provided for validation";
         String command = parsedInput.getFirst();
         switch (command) {
+            case "list":
+                break;
             case "find":
             case "todo":
                 assert parsedInput.size() == 2 : "Invalid number of details provided for a find/todo command";

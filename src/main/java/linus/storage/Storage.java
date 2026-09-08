@@ -42,7 +42,7 @@ public class Storage {
                 }
                 this.file.createNewFile();
             } catch (IOException e) {
-                Ui.echo("OOPS!!! Unable to create tasklist file.");
+                Ui.display("OOPS!!! Unable to create tasklist file.");
             }
         }
     }
@@ -88,7 +88,7 @@ public class Storage {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            Ui.echo("OOPS!!! Unable to open and load the tasklist file.");
+            Ui.display("OOPS!!! Unable to open and load the tasklist file.");
         }
         return taskList;
     }
@@ -107,7 +107,7 @@ public class Storage {
             }
             fileWriter.close();
         } catch (IOException e) {
-            Ui.echo("OOPS!!! Unable to open and save tasklist file.");
+            Ui.display("OOPS!!! Unable to open and save tasklist file.");
         }
     }
 }
