@@ -68,11 +68,12 @@ public class Executor {
      * @return String representation of all tasks in the tasklist.
      */
     public String listAll() {
-        String tasks = IntStream.range(0, this.taskList.size())
+        return IntStream.range(0, this.taskList.size())
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
-                .collect(Collectors.joining("\n"));
-
-        return "Here are the tasks in your list:\n" + tasks;
+                .reduce(
+                        "Here are the tasks in your list:",
+                        (result, task) -> result + "\n" + task
+                );
     }
 
     /**
@@ -128,17 +129,13 @@ public class Executor {
      * @return Message containing all the tasks whose description contains keyword.
      */
     public String find(String keyword) {
-        StringBuilder string = new StringBuilder("Here are the matching tasks in your list: ");
-        for (int i = 0; i < taskList.size(); i++) {
-            Task currentTask = taskList.get(i);
-            if (currentTask.getDescription().contains(keyword)) {
-                string.append("\n");
-                string.append(i + 1);
-                string.append(". ");
-                string.append(this.taskList.get(i));
-            }
-        }
-        return string.toString();
+        return IntStream.range(0, this.taskList.size())
+                .filter(i -> this.taskList.get(i).getDescription().contains(keyword))
+                .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
+                .reduce(
+                        "Here are the matching tasks in your list:",
+                        (result, task) -> result + "\n" + task
+                );
     }
 
     /**
