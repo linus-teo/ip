@@ -40,7 +40,7 @@ public class Ui {
      *
      * @return Standard welcome message of the chatbot.
      */
-    public static String gethello() {
+    public static String getHello() {
         return "Hello! My name is Linus.\nHow may I help you today?";
     }
     /**
@@ -49,6 +49,7 @@ public class Ui {
      * @return Input from command line from user.
      */
     public String read() {
+        assert this.scanner != null : "Scanner has not been initialised";
         return this.scanner.nextLine();
     }
 
@@ -66,6 +67,7 @@ public class Ui {
      * @param text Text to be printed to the screen.
      */
     public static void echo(String text) {
+        assert text != null : "No text provided to print to command line.";
         System.out.println(Ui.HORIZONTAL_LINE);
         System.out.println(text);
         System.out.println(Ui.HORIZONTAL_LINE);
