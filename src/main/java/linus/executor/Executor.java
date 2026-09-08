@@ -2,6 +2,8 @@ package linus.executor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import linus.invalidtaskexception.InvalidTaskException;
 import linus.storage.Storage;
@@ -66,15 +68,11 @@ public class Executor {
      * @return String representation of all tasks in the tasklist.
      */
     public String listAll() {
-        StringBuilder string = new StringBuilder("Here are the tasks in your list: ");
-        int length = this.taskList.size();
-        for (int i = 0; i < length; i++) {
-            string.append("\n");
-            string.append(i + 1);
-            string.append(". ");
-            string.append(this.taskList.get(i));
-        }
-        return string.toString();
+        String tasks = IntStream.range(0, this.taskList.size())
+                .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
+                .collect(Collectors.joining("\n"));
+
+        return "Here are the tasks in your list:\n" + tasks;
     }
 
     /**
