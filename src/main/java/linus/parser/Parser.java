@@ -23,6 +23,7 @@ public class Parser {
      * @return Parsed input as a List of Strings.
      */
     public List<String> parse(String input) throws InvalidTaskException {
+        assert input != null : "Input text to be parsed is null";
         switch (input) {
             case "bye":
                 return List.of("bye");
