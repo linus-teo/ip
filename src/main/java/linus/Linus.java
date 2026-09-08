@@ -50,7 +50,7 @@ public class Linus {
      * for user input to execute commands.
      */
     public void run() {
-        Ui.hello();
+        Ui.sayHello();
         while (true) {
             String input = this.ui.read();
             try {
@@ -60,16 +60,16 @@ public class Linus {
                 }
                 this.validator.validate(parsedInput);
                 String response = this.executor.execute(parsedInput);
-                Ui.echo(response);
+                Ui.display(response);
             } catch (InvalidTaskException e) {
-                Ui.echo(e.getMessage());
+                Ui.display(e.getMessage());
             } catch (NumberFormatException e) {
-                Ui.echo("OOPS!!! Please enter a valid task ID :-(");
+                Ui.display("OOPS!!! Please enter a valid task ID :-(");
             } catch (DateTimeParseException e) {
-                Ui.echo("OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(");
+                Ui.display("OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(");
             }
         }
-        Ui.bye();
+        Ui.sayBye();
     }
 
     /**
