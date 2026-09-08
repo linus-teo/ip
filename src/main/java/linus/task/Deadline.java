@@ -48,4 +48,23 @@ public class Deadline extends Task {
         }
         return "D | | " + this.getDescription() + " | " + this.deadline + "\n";
     }
+
+    /**
+     * Returns if the input object is equal to the deadline task.
+     * Deadline tasks are equal if they have the same description and deadline date.
+     * @param obj   the reference object with which to compare.
+     * @return Whether the 2 objects are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Deadline) {
+            Deadline task = (Deadline) obj;
+            return this.getDescription().equals(task.getDescription())
+                    && this.deadline.equals(task.deadline);
+        }
+        return false;
+    }
 }

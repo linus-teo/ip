@@ -38,4 +38,22 @@ public class ToDo extends Task {
         }
         return "T | | " + this.getDescription() + "\n";
     }
+
+    /**
+     * Returns if the input object is equal to the todo task.
+     * Todo tasks are equal if they have the same description.
+     * @param obj   the reference object with which to compare.
+     * @return Whether the 2 objects are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof ToDo) {
+            ToDo task = (ToDo) obj;
+            return this.getDescription().equals(task.getDescription());
+        }
+        return false;
+    }
 }
