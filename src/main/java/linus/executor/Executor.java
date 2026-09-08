@@ -2,7 +2,6 @@ package linus.executor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import linus.invalidtaskexception.InvalidTaskException;
@@ -76,10 +75,7 @@ public class Executor {
     public String listAll() {
         return IntStream.range(0, this.taskList.size())
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
-                .reduce(
-                        "Here are the tasks in your list:",
-                        (result, task) -> result + "\n" + task
-                );
+                .reduce("Here are the tasks in your list:", (result, task) -> result + "\n" + task);
     }
 
     /**
@@ -147,10 +143,8 @@ public class Executor {
         return IntStream.range(0, this.taskList.size())
                 .filter(i -> this.taskList.get(i).getDescription().contains(keyword))
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
-                .reduce(
-                        "Here are the matching tasks in your list:",
-                        (result, task) -> result + "\n" + task
-                );
+                .reduce("Here are the matching tasks in your list:", (result, task) ->
+                        result + "\n" + task);
     }
 
     /**
@@ -178,7 +172,7 @@ public class Executor {
                 task = new Deadline(false, description, deadline);
                 break;
             case "event":
-                assert parsedInput.size() == 4: "Invalid number of details provided for an event command";
+                assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
                 LocalDate startDate = LocalDate.parse(parsedInput.get(2), Validator.DATE_FORMAT);
                 LocalDate endDate = LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
                 task = new Event(false, description, startDate, endDate);

@@ -65,7 +65,7 @@ public class Validator {
                 LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
                 break;
             case "event":
-                assert parsedInput.size() == 4: "Invalid number of details provided for an event command";
+                assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
                 if (parsedInput.get(1).isBlank()) {
                     throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
                 }

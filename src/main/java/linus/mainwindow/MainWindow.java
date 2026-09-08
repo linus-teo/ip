@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-
 import linus.Linus;
 import linus.dialogbox.DialogBox;
 import linus.ui.Ui;
@@ -29,7 +28,7 @@ public class MainWindow extends AnchorPane {
     private Linus linus;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image LinusImage = new Image(this.getClass().getResourceAsStream("/images/DaLinus.png"));
+    private Image linusImage = new Image(this.getClass().getResourceAsStream("/images/DaLinus.png"));
 
     @FXML
     public void initialize() {
@@ -40,7 +39,7 @@ public class MainWindow extends AnchorPane {
     public void setLinus(Linus l) {
         linus = l;
         dialogContainer.getChildren().add(
-                DialogBox.getLinusDialog(Ui.getHelloMessage(), LinusImage)
+                DialogBox.getLinusDialog(Ui.getHelloMessage(), linusImage)
         );
     }
 
@@ -54,7 +53,7 @@ public class MainWindow extends AnchorPane {
         String response = linus.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getLinusDialog(response, LinusImage)
+                DialogBox.getLinusDialog(response, linusImage)
         );
         userInput.clear();
         if (input.equals("bye")) {
