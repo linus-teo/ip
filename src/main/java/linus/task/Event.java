@@ -53,4 +53,24 @@ public class Event extends Task {
         }
         return "E | | " + this.getDescription() + " | " + this.start + " | " + this.end + "\n";
     }
+
+    /**
+     * Returns if the input object is equal to the event task.
+     * Event tasks are equal if they have the same description, start date and end date.
+     * @param obj   the reference object with which to compare.
+     * @return Whether the 2 objects are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Event) {
+            Event task = (Event) obj;
+            return this.getDescription().equals(task.getDescription())
+                    && this.start.equals(task.start)
+                    && this.end.equals(task.end);
+        }
+        return false;
+    }
 }

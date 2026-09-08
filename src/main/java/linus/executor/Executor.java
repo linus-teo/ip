@@ -188,6 +188,9 @@ public class Executor {
                 throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
         assert this.taskList != null : "The tasklist is null and has not been initialised";
+        if (this.taskList.contains(task)) {
+            return "This task already exists in the tasklist.";
+        }
         this.taskList.add(task);
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
