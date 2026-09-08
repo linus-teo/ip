@@ -35,6 +35,7 @@ public class Ui {
      * @return Input text from command line entered by user.
      */
     public String read() {
+        assert this.scanner != null : "Scanner has not been initialised";
         return this.scanner.nextLine();
     }
 

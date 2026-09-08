@@ -29,7 +29,7 @@ public class MainWindow extends AnchorPane {
     private Linus linus;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private Image LinusImage = new Image(this.getClass().getResourceAsStream("/images/DaLinus.png"));
 
     @FXML
     public void initialize() {
@@ -40,12 +40,12 @@ public class MainWindow extends AnchorPane {
     public void setLinus(Linus l) {
         linus = l;
         dialogContainer.getChildren().add(
-                DialogBox.getDukeDialog(Ui.getHelloMessage(), dukeImage)
+                DialogBox.getLinusDialog(Ui.getHello(), LinusImage)
         );
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
+     * Creates two dialog boxes, one echoing user input and the other containing Linus's reply and then appends them to
      * the dialog container. Clears the user input after processing.
      */
     @FXML
@@ -54,7 +54,7 @@ public class MainWindow extends AnchorPane {
         String response = linus.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                DialogBox.getLinusDialog(response, LinusImage)
         );
         userInput.clear();
         if (input.equals("bye")) {

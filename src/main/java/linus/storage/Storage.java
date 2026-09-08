@@ -32,15 +32,15 @@ public class Storage {
      * @param path The filepath of the file to be used as storage.
      */
     public Storage(String path) {
-        Path filepath = Paths.get(path);
+        assert path != null : "No filepath provided to create storage.";
         this.file = new File(path);
         if (!this.file.exists()) {
             try {
                 File parent = this.file.getParentFile();
                 if (parent != null) {
-                    Files.createDirectories(parent.toPath());
+                    parent.mkdirs();
                 }
-                Files.createFile(filepath);
+                this.file.createNewFile();
             } catch (IOException e) {
                 Ui.display("OOPS!!! Unable to create tasklist file.");
             }
@@ -54,23 +54,28 @@ public class Storage {
      */
     public List<Task> loadFile() {
         List<Task> taskList = new ArrayList<>();
+        assert this.file != null : "File has not been initialised";
         try {
             Scanner scanner = new Scanner(this.file);
             while (scanner.hasNextLine()) {
                 String task = scanner.nextLine();
                 String[] parts = task.split("\\s*\\|\\s*");
+                assert parts.length >= 3 : "Task does not have correct number of details";
                 boolean isDone = parts[1].equals("X");
                 String description = parts[2];
                 switch (parts[0]) {
                     case "T":
+                        assert parts.length == 3 : "Todo task does not have correct number of details";
                         taskList.add(new ToDo(isDone, description));
                         break;
                     case "D":
+                        assert parts.length == 4 : "Deadline task does not have correct number of details";
                         String deadlineText = parts[3];
                         LocalDate deadline = LocalDate.parse(deadlineText);
                         taskList.add(new Deadline(isDone, description, deadline));
                         break;
                     case "E":
+                        assert parts.length == 5 : "Event task does not have correct number of details";
                         String startText = parts[3];
                         String endText = parts[4];
                         LocalDate start = LocalDate.parse(startText);

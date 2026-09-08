@@ -1,7 +1,6 @@
 package linus.launcher;
 
 import javafx.application.Application;
-
 import linus.main.Main;
 
 /**

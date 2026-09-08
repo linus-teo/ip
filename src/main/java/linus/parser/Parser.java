@@ -32,6 +32,7 @@ public class Parser {
      * @return Parsed input as a List of Strings.
      */
     public List<String> parse(String input) throws InvalidTaskException {
+        assert input != null : "Input text to be parsed is null";
         if (input.equals(BYE_COMMAND)) {
             return List.of(BYE_COMMAND);
         } else if (input.equals(LIST_COMMAND)) {

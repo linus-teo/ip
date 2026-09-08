@@ -35,12 +35,15 @@ public class Validator {
      */
     public void validate(List<String> parsedInput) throws InvalidTaskException, NumberFormatException,
             DateTimeParseException {
+        assert parsedInput != null : "Parsed input provided for validation is null";
+        assert !parsedInput.isEmpty() : "No parsed input provided for validation";
         String command = parsedInput.getFirst();
         switch (command) {
             case "list":
                 break;
             case "find":
             case "todo":
+                assert parsedInput.size() == 2 : "Invalid number of details provided for a find/todo command";
                 if (parsedInput.getLast().isBlank()) {
                     throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
                 }
@@ -48,18 +51,21 @@ public class Validator {
             case "mark":
             case "unmark":
             case "delete":
+                assert parsedInput.size() == 2 : "Invalid number of details provided for a mark/unmark/delete command";
                 int index = Integer.parseInt(parsedInput.get(1));
                 if (index < 1 || index > this.taskList.size()) {
                     throw new InvalidTaskException("OOPS!!! Please enter a valid task ID :-(");
                 }
                 break;
             case "deadline":
+                assert parsedInput.size() == 3 : "Invalid number of details provided for a deadline command";
                 if (parsedInput.get(1).isBlank()) {
                     throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
                 }
                 LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
                 break;
             case "event":
+                assert parsedInput.size() == 4: "Invalid number of details provided for an event command";
                 if (parsedInput.get(1).isBlank()) {
                     throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
                 }
