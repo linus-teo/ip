@@ -40,7 +40,7 @@ public class MainWindow extends AnchorPane {
     public void setLinus(Linus l) {
         linus = l;
         dialogContainer.getChildren().add(
-                DialogBox.getLinusDialog(Ui.getHello(), LinusImage)
+                DialogBox.getLinusDialog(Ui.getHelloMessage(), LinusImage)
         );
     }
 
