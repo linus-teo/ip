@@ -43,10 +43,11 @@ public class Validator {
         assert parsedInput != null : "Parsed input provided for validation is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for validation";
         String command = parsedInput.getFirst();
+        if (command.equals("list")) {
+            return;
+        }
         String description = parsedInput.get(1);
         switch (command) {
-            case "list":
-                break;
             case "find":
                 // Fallthrough
             case "todo":
