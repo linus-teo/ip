@@ -1,5 +1,6 @@
 package linus.executor;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -37,7 +38,7 @@ public class Executor {
      * @return Message that describes the status of the execution of the command.
      * @throws InvalidTaskException If addTask() does not recognise input, throw InvalidTaskException.
      */
-    public String execute(List<String> parsedInput) throws InvalidTaskException {
+    public String execute(List<String> parsedInput) throws InvalidTaskException, IOException {
         assert parsedInput != null : "Parsed input to execute is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for execution";
         String command = parsedInput.getFirst();
@@ -87,7 +88,7 @@ public class Executor {
      * @param index The task number as a string to be marked as completed.
      * @return Message to indicate successful marking of task.
      */
-    private String mark(String index) {
+    private String mark(String index) throws IOException {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
         Task task = this.getTask(index);
 
@@ -106,7 +107,7 @@ public class Executor {
      * @param index The task number as a string to be marked as incomplete.
      * @return Message to indicate successful unmarking of task.
      */
-    private String unmark(String index) {
+    private String unmark(String index) throws IOException {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
         Task task = this.getTask(index);
 
@@ -125,7 +126,7 @@ public class Executor {
      * @param index The task number as a string to be deleted from the task list.
      * @return Message to indicate successful deletion of task.
      */
-    private String delete(String index) {
+    private String delete(String index) throws IOException {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
         Task task = this.getTask(index);
 
@@ -162,7 +163,8 @@ public class Executor {
      * @return Message to indicate successful addition of the task.
      * @throws InvalidTaskException If the command is not recognised. Should not reach this point.
      */
-    private String addTask(String command, String description, List<String> parsedInput) throws InvalidTaskException {
+    private String addTask(String command, String description, List<String> parsedInput) throws InvalidTaskException,
+            IOException {
         assert parsedInput != null : "Parsed input to execute is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for execution";
         assert parsedInput.size() >= 2 : "Invalid format for todo/deadline/event add task command";
