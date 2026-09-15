@@ -36,7 +36,7 @@ public class Storage {
             try {
                 this.createStorage(file);
             } catch (IOException e) {
-                Ui.display("OOPS!!! Unable to create tasklist file.");
+                Ui.display("Here's a tech tip! I'm unable to create the tasklist file.");
             }
         }
     }
@@ -66,7 +66,7 @@ public class Storage {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            Ui.display("OOPS!!! Unable to open and load the tasklist file.");
+            Ui.display("Here's a tech tip! I'm unable to open and load the tasklist file.");
         } catch (InvalidTaskException e) {
             Ui.display(e.getMessage());
         }
@@ -95,7 +95,7 @@ public class Storage {
                 LocalDate end = LocalDate.parse(endText);
                 return new Event(isDone, description, start, end);
             default:
-                throw new InvalidTaskException("OOPS!!! Unable to load the invalid task from storage.");
+                throw new InvalidTaskException("Here's a tech tip! I'm unable to load the invalid task from storage.");
         }
     }
 
@@ -112,7 +112,7 @@ public class Storage {
             }
             fileWriter.close();
         } catch (IOException e) {
-            Ui.display("OOPS!!! Unable to open and save tasklist file.");
+            Ui.display("Here's a tech tip! I'm unable to open and save tasklist file.");
         }
     }
 }

@@ -14,9 +14,9 @@ import linus.task.Task;
 public class Validator {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private static final String EMPTY_DESCRIPTION_ERROR = "OOPS!!! Please enter a valid task description :-(";
-    private static final String INVALID_TASK_INDEX_ERROR = "OOPS!!! Please enter a valid task ID :-(";
-    private static final String UNKNOWN_COMMAND_ERROR = "OOPS!!! I'm sorry, but I don't know what that means :-(";
+    private static final String EMPTY_DESCRIPTION_ERROR = "Here's a tech tip! Enter a valid task description :-(";
+    private static final String INVALID_TASK_INDEX_ERROR = "Here's a tech tip! Enter a valid task ID :-(";
+    private static final String UNKNOWN_COMMAND_ERROR = "Here's a tech tip! Enter the command with a valid format! :-(";
 
     /** The tasklist to validate the input against. */
     private final List<Task> taskList;

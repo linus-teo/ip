@@ -88,9 +88,9 @@ public class Linus {
         } catch (InvalidTaskException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {
-            return "OOPS!!! Please enter a valid task ID :-(";
+            return "Here's a tech tip! Enter a valid task ID :-(";
         } catch (DateTimeParseException e) {
-            return "OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(";
+            return "Here's a tech tip! Enter a valid date in the format \"yyyy-MM-dd\" :-(";
         }
     }
 }

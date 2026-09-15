@@ -16,9 +16,9 @@ public class Ui {
             + "| |___| | | | | |_| \\__ \\\n"
             + "|_____|_|_| |_|\\__,_|___/\n";
     /** Standard welcome message. */
-    private static final String HELLO_MESSAGE = "Hello! My name is Linus.\nHow may I help you today?";
+    private static final String HELLO_MESSAGE = "Hello! My name is Linus.\nWhat tech tips would you like today?";
     /** Standard goodbye message. */
-    private static final String BYE_MESSAGE = "Bye! Hope to see you again soon!";
+    private static final String BYE_MESSAGE = "Bye! Hope to see you again soon for more tech tips!";
     /** Scanner to read user input from the command line. */
     private final Scanner scanner;
 
