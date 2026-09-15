@@ -41,26 +41,29 @@ public class Executor {
         assert parsedInput != null : "Parsed input to execute is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for execution";
         String command = parsedInput.getFirst();
+        if (command.equals("list")) {
+            return this.listAll();
+        }
+        String description = parsedInput.get(1);
         switch (command) {
-            case "list":
-                assert parsedInput.size() == 1 : "Invalid format for list command";
-                return this.listAll();
             case "mark":
                 assert parsedInput.size() == 2 : "Invalid format for mark command";
-                return this.mark(Integer.parseInt(parsedInput.getLast()));
+                return this.mark(description);
             case "unmark":
                 assert parsedInput.size() == 2 : "Invalid format for unmark command";
-                return this.unmark(Integer.parseInt(parsedInput.getLast()));
+                return this.unmark(description);
             case "delete":
                 assert parsedInput.size() == 2 : "Invalid format for delete command";
-                return this.delete(Integer.parseInt(parsedInput.getLast()));
+                return this.delete(description);
             case "find":
                 assert parsedInput.size() == 2 : "Invalid format for find command";
-                return this.find(parsedInput.getLast());
+                return this.find(description);
             case "todo":
+                // Fallthrough
             case "deadline":
+                // Fallthrough
             case "event":
-                return this.addTask(command, parsedInput);
+                return this.addTask(command, description, parsedInput);
             default:
                 // Should not reach here
                 return "Unknown command could not be executed";
@@ -72,7 +75,7 @@ public class Executor {
      *
      * @return String representation of all tasks in the tasklist.
      */
-    public String listAll() {
+    private String listAll() {
         return IntStream.range(0, this.taskList.size())
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
                 .reduce("Here are the tasks in your list:", (result, task) -> result + "\n" + task);
@@ -81,56 +84,59 @@ public class Executor {
     /**
      * Marks the selected task as completed.
      *
-     * @param position The task number to be marked as completed.
+     * @param index The task number as a string to be marked as completed.
      * @return Message to indicate successful marking of task.
      */
-    public String mark(int position) {
+    private String mark(String index) {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
-        int taskId = position - 1;
-        Task task = this.taskList.get(taskId);
+        Task task = this.getTask(index);
+
         assert task != null : "The task to be marked is null";
         task.mark();
+
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
-        String output = "Nice! I've marked this task as done: \n" + task;
-        return output;
+
+        return "Nice! I've marked this task as done: \n" + task;
     }
 
     /**
      * Marks the selected task as not completed.
      *
-     * @param position The task number to be marked as incomplete.
+     * @param index The task number as a string to be marked as incomplete.
      * @return Message to indicate successful unmarking of task.
      */
-    public String unmark(int position) {
+    private String unmark(String index) {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
-        int taskId = position - 1;
-        Task task = this.taskList.get(taskId);
+        Task task = this.getTask(index);
+
         assert task != null : "The task to be unmarked is null";
         task.unmark();
+
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
-        String output = "OK, I've marked this task as not done yet: \n" + task;
-        return output;
+
+        return "OK, I've marked this task as not done yet: \n" + task;
     }
 
     /**
      * Deletes the selected task from the tasklist.
      *
-     * @param position The task number to be deleted from the task list.
+     * @param index The task number as a string to be deleted from the task list.
      * @return Message to indicate successful deletion of task.
      */
-    public String delete(int position) {
+    private String delete(String index) {
         assert this.taskList != null : "The tasklist is null and has not been initialised";
-        int taskId = position - 1;
-        Task task = this.taskList.get(taskId);
+        Task task = this.getTask(index);
+
         assert task != null : "The task to be deleted is null";
         this.taskList.remove(task);
+
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
-        StringBuilder output = new StringBuilder("Noted. I've removed this task: \n");
-        output.append(task).append("\nNow you have " + this.taskList.size() + " tasks in the list.");
-        return output.toString();
+
+        return "Noted. I've removed this task: \n" + task + "\nNow you have "
+                + this.taskList.size() + " tasks in the list.";
     }
 
     /**
@@ -139,7 +145,7 @@ public class Executor {
      * @param keyword The string to search for in the task description of all tasks.
      * @return Message containing all the tasks whose description contains keyword.
      */
-    public String find(String keyword) {
+    private String find(String keyword) {
         return IntStream.range(0, this.taskList.size())
                 .filter(i -> this.taskList.get(i).getDescription().contains(keyword))
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
@@ -151,15 +157,16 @@ public class Executor {
      * Adds the specified task to the TaskList.
      *
      * @param command The string that describes which type of task to add.
+     * @param description The description of the task.
      * @param parsedInput The parsed plaintext input from the user.
      * @return Message to indicate successful addition of the task.
      * @throws InvalidTaskException If the command is not recognised. Should not reach this point.
      */
-    public String addTask(String command, List<String> parsedInput) throws InvalidTaskException {
+    private String addTask(String command, String description, List<String> parsedInput) throws InvalidTaskException {
         assert parsedInput != null : "Parsed input to execute is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for execution";
         assert parsedInput.size() >= 2 : "Invalid format for todo/deadline/event add task command";
-        String description = parsedInput.get(1);
+
         Task task;
         switch (command) {
             case "todo":
@@ -181,15 +188,22 @@ public class Executor {
                 // Should not be reached.
                 throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
+
         assert this.taskList != null : "The tasklist is null and has not been initialised";
         if (this.taskList.contains(task)) {
             return "This task already exists in the tasklist.";
         }
         this.taskList.add(task);
+
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
-        String output = "Got it. I've added this task: \n" + task + "\n"
+
+        return "Got it. I've added this task: \n" + task + "\n"
                 + "Now you have " + this.taskList.size() + " tasks in the list.";
-        return output;
+    }
+
+    private Task getTask(String index) {
+        int taskId = Integer.parseInt(index) - 1;
+        return this.taskList.get(taskId);
     }
 }

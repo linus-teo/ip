@@ -64,7 +64,7 @@ public class Ui {
 
     /**
      * Prints the input text to the command line.
-     * Formats input text with horizontal line above and below for spacing.
+     * Formats input text with horizontal lines above and below for spacing.
      *
      * @param text Text to be printed to the screen.
      */

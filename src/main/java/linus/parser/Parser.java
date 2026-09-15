@@ -23,13 +23,14 @@ public class Parser {
     private static final String FROM_SEPARATOR = " /from ";
     private static final String TO_SEPARATOR = " /to ";
 
+    private static final String INVALID_COMMAND_ERROR = "OOPS!!! Please re-enter the command with a valid format! :-(";
 
     /**
      * Returns a list of strings containing the parsed input.
      * Only parses the input, does not do validation of arguments.
      *
      * @param input Plaintext string input from user.
-     * @return Parsed input as a List of Strings.
+     * @return Parsed input as a list of strings.
      */
     public List<String> parse(String input) throws InvalidTaskException {
         assert input != null : "Input text to be parsed is null";
@@ -44,15 +45,33 @@ public class Parser {
         } else if (input.matches(EVENT_COMMAND_REGEX)) {
             return this.parseEventCommand(input);
         } else {
-            throw new InvalidTaskException("OOPS!!! Please re-enter the command with a valid format! :-(");
+            throw new InvalidTaskException(INVALID_COMMAND_ERROR);
         }
     }
 
+    /**
+     * Parses and breaks a simple command down to its command and argument.
+     * A simple command consists of a command keyword, followed by a space and
+     * exactly 1 argument after. Mark, Unmark, Delete, Find and Todo are all
+     * the simple commands allowed for the chatbot.
+     *
+     * @param input Plaintext string input from user.
+     * @return Parsed input as a list of strings.
+     */
     private List<String> parseSimpleCommand(String input) {
         String[] parts = input.split(" ", 2);
         return List.of(parts[0], parts[1]);
     }
 
+    /**
+     * Parses and breaks a deadline command down to its command and arguments.
+     * A deadline command consists of the 'deadline' keyword, followed by a space and
+     * the description of the task, followed by a space and the /by delimiter,
+     * followed by a space and the deadline, e.g. deadline description /by deadline.
+     *
+     * @param input Plaintext string input from user.
+     * @return Parsed input as a list of strings.
+     */
     private List<String> parseDeadlineCommand(String input) {
         int byIndex = input.indexOf(BY_SEPARATOR);
         String description = input.substring(DEADLINE_PREFIX.length(), byIndex);
@@ -60,6 +79,17 @@ public class Parser {
         return List.of(DEADLINE_COMMAND, description, date);
     }
 
+    /**
+     * Parses and breaks an event command down to its command and arguments.
+     * An event command consists of the 'event' keyword, followed by a space and
+     * the description of the task, followed by a space and the /from delimiter,
+     * followed by a space and the start date, followed by a space and the /to
+     * delimiter, followed by a space and the end date.
+     * E.g. event description /from start /to end.
+     *
+     * @param input Plaintext string input from user.
+     * @return Parsed input as a list of strings.
+     */
     private List<String> parseEventCommand(String input) {
         int fromIndex = input.indexOf(FROM_SEPARATOR);
         int toIndex = input.indexOf(TO_SEPARATOR);

@@ -53,23 +53,21 @@ public class Linus {
         Ui.sayHello();
         while (true) {
             String input = this.ui.read();
-            try {
-                List<String> parsedInput = this.parser.parse(input);
-                if (parsedInput.equals(List.of("bye"))) {
-                    break;
-                }
-                this.validator.validate(parsedInput);
-                String response = this.executor.execute(parsedInput);
-                Ui.display(response);
-            } catch (InvalidTaskException e) {
-                Ui.display(e.getMessage());
-            } catch (NumberFormatException e) {
-                Ui.display("OOPS!!! Please enter a valid task ID :-(");
-            } catch (DateTimeParseException e) {
-                Ui.display("OOPS!!! Please enter a valid date in the format \"yyyy-MM-dd\" :-(");
+            boolean isBye = processInput(input);
+            if (isBye) {
+                break;
             }
         }
         Ui.sayBye();
+    }
+
+    private boolean processInput(String input) {
+        String response = this.getResponse(input);
+        if (response.equals("bye")) {
+            return true;
+        }
+        Ui.display(response);
+        return false;
     }
 
     /**
@@ -86,8 +84,7 @@ public class Linus {
                 return input;
             }
             this.validator.validate(parsedInput);
-            String response = this.executor.execute(parsedInput);
-            return response;
+            return this.executor.execute(parsedInput);
         } catch (InvalidTaskException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {

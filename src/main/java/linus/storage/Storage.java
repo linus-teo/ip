@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import linus.invalidtaskexception.InvalidTaskException;
 import linus.task.Deadline;
 import linus.task.Event;
 import linus.task.Task;
@@ -33,19 +34,23 @@ public class Storage {
         this.file = new File(path);
         if (!this.file.exists()) {
             try {
-                File parent = this.file.getParentFile();
-                if (parent != null) {
-                    parent.mkdirs();
-                }
-                this.file.createNewFile();
+                this.createStorage(file);
             } catch (IOException e) {
                 Ui.display("OOPS!!! Unable to create tasklist file.");
             }
         }
     }
 
+    private void createStorage(File file) throws IOException {
+        File parent = file.getParentFile();
+        if (parent != null) {
+            parent.mkdirs();
+        }
+        this.file.createNewFile();
+    }
+
     /**
-     * Load the tasks in the storage file into the TaskList.
+     * Loads the tasks in the storage file into the TaskList.
      *
      * @return Tasklist of tasks corresponding to the local storage tasklist file.
      */
@@ -55,51 +60,54 @@ public class Storage {
         try {
             Scanner scanner = new Scanner(this.file);
             while (scanner.hasNextLine()) {
-                String task = scanner.nextLine();
-                String[] parts = task.split("\\s*\\|\\s*");
-                assert parts.length >= 3 : "Task does not have correct number of details";
-                boolean isDone = parts[1].equals("X");
-                String description = parts[2];
-                switch (parts[0]) {
-                    case "T":
-                        assert parts.length == 3 : "Todo task does not have correct number of details";
-                        taskList.add(new ToDo(isDone, description));
-                        break;
-                    case "D":
-                        assert parts.length == 4 : "Deadline task does not have correct number of details";
-                        String deadlineText = parts[3];
-                        LocalDate deadline = LocalDate.parse(deadlineText);
-                        taskList.add(new Deadline(isDone, description, deadline));
-                        break;
-                    case "E":
-                        assert parts.length == 5 : "Event task does not have correct number of details";
-                        String startText = parts[3];
-                        String endText = parts[4];
-                        LocalDate start = LocalDate.parse(startText);
-                        LocalDate end = LocalDate.parse(endText);
-                        taskList.add(new Event(isDone, description, start, end));
-                        break;
-                    default:
-                        break;
-                }
+                String text = scanner.nextLine();
+                Task task = this.loadTask(text);
+                taskList.add(task);
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             Ui.display("OOPS!!! Unable to open and load the tasklist file.");
+        } catch (InvalidTaskException e) {
+            Ui.display(e.getMessage());
         }
         return taskList;
     }
 
+    private Task loadTask(String text) throws InvalidTaskException {
+        String[] parts = text.split("\\s*\\|\\s*");
+        assert parts.length >= 3 : "Task does not have correct number of details";
+        boolean isDone = parts[1].equals("X");
+        String description = parts[2];
+        switch (parts[0]) {
+            case "T":
+                assert parts.length == 3 : "Todo task does not have correct number of details";
+                return new ToDo(isDone, description);
+            case "D":
+                assert parts.length == 4 : "Deadline task does not have correct number of details";
+                String deadlineText = parts[3];
+                LocalDate deadline = LocalDate.parse(deadlineText);
+                return new Deadline(isDone, description, deadline);
+            case "E":
+                assert parts.length == 5 : "Event task does not have correct number of details";
+                String startText = parts[3];
+                String endText = parts[4];
+                LocalDate start = LocalDate.parse(startText);
+                LocalDate end = LocalDate.parse(endText);
+                return new Event(isDone, description, start, end);
+            default:
+                throw new InvalidTaskException("OOPS!!! Unable to load the invalid task from storage.");
+        }
+    }
+
     /**
-     * Save the tasks from the TaskList into the local storage tasklist.
+     * Saves the tasks from the TaskList into the local storage tasklist.
      *
      * @param taskList The collection of Task objects.
      */
     public void saveFile(List<Task> taskList) {
         try {
             FileWriter fileWriter = new FileWriter(this.file);
-            for (int i = 0; i < taskList.size(); i++) {
-                Task task = taskList.get(i);
+            for (Task task : taskList) {
                 fileWriter.append(task.toFileFormat());
             }
             fileWriter.close();

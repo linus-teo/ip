@@ -9,11 +9,16 @@ import linus.invalidtaskexception.InvalidTaskException;
 import linus.task.Task;
 
 /**
- * Represents a validator that ensures input follows rules for acting on a tasklist.
+ * Represents a validator that ensures input is valid for acting on a specific tasklist.
  */
 public class Validator {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private static final String EMPTY_DESCRIPTION_ERROR = "OOPS!!! Please enter a valid task description :-(";
+    private static final String INVALID_TASK_INDEX_ERROR = "OOPS!!! Please enter a valid task ID :-(";
+    private static final String UNKNOWN_COMMAND_ERROR = "OOPS!!! I'm sorry, but I don't know what that means :-(";
+
+    /** The tasklist to validate the input against. */
     private final List<Task> taskList;
 
     /**
@@ -26,9 +31,9 @@ public class Validator {
     }
 
     /**
-     * Validate that the parsed input follows business rules.
+     * Validates that the parsed input is valid for the specific tasklist.
      *
-     * @param parsedInput Parsed input from Parser.
+     * @param parsedInput Parsed input from the parser.
      * @throws InvalidTaskException If description is blank or task number is negative, 0 or larger than tasklist size.
      * @throws NumberFormatException If the task ID is not a valid integer.
      * @throws DateTimeParseException If date does not follow yyyy-MM-dd format.
@@ -38,42 +43,59 @@ public class Validator {
         assert parsedInput != null : "Parsed input provided for validation is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for validation";
         String command = parsedInput.getFirst();
+        String description = parsedInput.get(1);
         switch (command) {
             case "list":
                 break;
             case "find":
+                // Fallthrough
             case "todo":
                 assert parsedInput.size() == 2 : "Invalid number of details provided for a find/todo command";
-                if (parsedInput.getLast().isBlank()) {
-                    throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
-                }
+                this.validateDescription(description);
                 break;
             case "mark":
+                // Fallthrough
             case "unmark":
+                // Fallthrough
             case "delete":
                 assert parsedInput.size() == 2 : "Invalid number of details provided for a mark/unmark/delete command";
-                int index = Integer.parseInt(parsedInput.get(1));
-                if (index < 1 || index > this.taskList.size()) {
-                    throw new InvalidTaskException("OOPS!!! Please enter a valid task ID :-(");
-                }
+                // For mark/unmark/delete command, the description represents the task index.
+                this.validateTaskIndex(description);
                 break;
             case "deadline":
                 assert parsedInput.size() == 3 : "Invalid number of details provided for a deadline command";
-                if (parsedInput.get(1).isBlank()) {
-                    throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
-                }
-                LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
+                this.validateDescription(description);
+                String deadline = parsedInput.getLast();
+                this.validateDateFormat(deadline);
                 break;
             case "event":
                 assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
-                if (parsedInput.get(1).isBlank()) {
-                    throw new InvalidTaskException("OOPS!!! Please enter a valid task description :-(");
-                }
-                LocalDate.parse(parsedInput.get(2), Validator.DATE_FORMAT);
-                LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
+                this.validateDescription(description);
+                String startDate = parsedInput.get(2);
+                String endDate = parsedInput.getLast();
+                this.validateDateFormat(startDate);
+                this.validateDateFormat(endDate);
                 break;
             default:
-                throw new InvalidTaskException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+                // Should not reach here.
+                throw new InvalidTaskException(UNKNOWN_COMMAND_ERROR);
         }
+    }
+
+    private void validateDescription(String description) throws InvalidTaskException {
+        if (description.isBlank()) {
+            throw new InvalidTaskException(EMPTY_DESCRIPTION_ERROR);
+        }
+    }
+
+    private void validateTaskIndex(String index) throws NumberFormatException, InvalidTaskException {
+        int taskIndex = Integer.parseInt(index);
+        if (taskIndex < 1 || taskIndex > this.taskList.size()) {
+            throw new InvalidTaskException(INVALID_TASK_INDEX_ERROR);
+        }
+    }
+
+    private void validateDateFormat(String date) throws DateTimeParseException {
+        LocalDate.parse(date, Validator.DATE_FORMAT);
     }
 }
