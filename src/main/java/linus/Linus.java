@@ -1,5 +1,6 @@
 package linus;
 
+import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
@@ -16,11 +17,10 @@ import linus.validator.Validator;
  * Represents the Linus chatbot which orchestrates the logical flow.
  */
 public class Linus {
-    private Ui ui;
-    private Parser parser;
-    private Validator validator;
-    private Executor executor;
-    private Storage storage;
+    private final Ui ui;
+    private final Parser parser;
+    private final Validator validator;
+    private final Executor executor;
 
     /**
      * Creates a new Linus chatbot.
@@ -28,21 +28,25 @@ public class Linus {
      *
      * @param filePath Path that the storage file is located.
      */
-    public Linus(String filePath) {
+    public Linus(String filePath) throws IOException, InvalidTaskException {
         this.ui = new Ui();
         this.parser = new Parser();
-        this.storage = new Storage(filePath);
-        List<Task> taskList = this.storage.loadFile();
+        Storage storage = new Storage(filePath);
+        List<Task> taskList = storage.loadFile();
         this.validator = new Validator(taskList);
-        this.executor = new Executor(taskList, this.storage);
+        this.executor = new Executor(taskList, storage);
     }
 
     /**
      * Creates and starts up the chatbot.
      */
-    public static void main() {
-        Linus chatbot = new Linus("data/tasklist.txt");
-        chatbot.run();
+    static void main() {
+        try {
+            Linus chatbot = new Linus("data/tasklist.txt");
+            chatbot.run();
+        } catch (IOException | InvalidTaskException e) {
+            Ui.display(e.getMessage());
+        }
     }
 
     /**
@@ -85,7 +89,7 @@ public class Linus {
             }
             this.validator.validate(parsedInput);
             return this.executor.execute(parsedInput);
-        } catch (InvalidTaskException e) {
+        } catch (IOException | InvalidTaskException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {
             return "Here's a tech tip! Enter a valid task ID :-(";

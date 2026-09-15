@@ -60,7 +60,9 @@ public class Parser {
      */
     private List<String> parseSimpleCommand(String input) {
         String[] parts = input.split(" ", 2);
-        return List.of(parts[0], parts[1]);
+        String command = parts[0];
+        String argument = parts[1];
+        return List.of(command, argument);
     }
 
     /**

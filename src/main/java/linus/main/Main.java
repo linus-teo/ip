@@ -8,18 +8,18 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import linus.Linus;
+import linus.invalidtaskexception.InvalidTaskException;
 import linus.mainwindow.MainWindow;
+import linus.ui.Ui;
 
 /**
  * A GUI for Linus using FXML.
  */
 public class Main extends Application {
-
-    private Linus linus = new Linus("data/tasklist.txt");
-
     @Override
     public void start(Stage stage) {
         try {
+            Linus linus = new Linus("data/tasklist.txt");
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
@@ -28,8 +28,8 @@ public class Main extends Application {
             stage.setMinWidth(417);
             fxmlLoader.<MainWindow>getController().setLinus(linus); // inject the Linus instance
             stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | InvalidTaskException e) {
+            Ui.display(e.getMessage());
         }
     }
 }
