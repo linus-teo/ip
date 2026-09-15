@@ -23,16 +23,16 @@ import linus.task.ToDo;
  * to the TaskList.
  */
 public class Storage {
-    private static final String CREATE_STORAGE_ERROR
-            = "Here's a tech tip! I'm unable to create the storage for the tasklist file :-(";
+    private static final String CREATE_STORAGE_ERROR =
+            "Here's a tech tip! I'm unable to create the storage for the tasklist file :-(";
     private static final String LOAD_FILE_ERROR = "Here's a tech tip! I'm unable to open and load the tasklist file.";
     private static final String LOAD_TASK_ERROR = "Here's a tech tip! I'm unable to load the invalid task from storage";
-    private static final String LOAD_TODO_TASK_ERROR
-            = "Here's a tech tip! I'm unable to load the invalid ToDo task from storage";
-    private static final String LOAD_DEADLINE_TASK_ERROR
-            = "Here's a tech tip! I'm unable to load the invalid deadline task from storage";
-    private static final String LOAD_EVENT_TASK_ERROR
-            = "Here's a tech tip! I'm unable to load the invalid Event task from storage";
+    private static final String LOAD_TODO_TASK_ERROR =
+            "Here's a tech tip! I'm unable to load the invalid ToDo task from storage";
+    private static final String LOAD_DEADLINE_TASK_ERROR =
+            "Here's a tech tip! I'm unable to load the invalid deadline task from storage";
+    private static final String LOAD_EVENT_TASK_ERROR =
+            "Here's a tech tip! I'm unable to load the invalid Event task from storage";
     private static final String SAVE_FILE_ERROR = "Here's a tech tip! I'm unable to open and save the tasklist file.";
 
     private final File file;
@@ -70,7 +70,7 @@ public class Storage {
      *
      * @return Tasklist of tasks corresponding to the local storage tasklist file.
      */
-    public List<Task> loadFile() throws FileNotFoundException, InvalidTaskException{
+    public List<Task> loadFile() throws FileNotFoundException, InvalidTaskException {
         try (Scanner scanner = new Scanner(this.file)) {
             return createTasklist(scanner);
         } catch (FileNotFoundException e) {
