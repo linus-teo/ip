@@ -66,7 +66,7 @@ public class Executor {
                 return this.addTask(command, description, parsedInput);
             default:
                 // Should not reach here
-                return "Unknown command could not be executed";
+                return "Here's a tech tip! Enter the command with a valid format! :-(";
         }
     }
 
@@ -97,7 +97,7 @@ public class Executor {
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
 
-        return "Nice! I've marked this task as done: \n" + task;
+        return "Yay! I've marked this task as done: \n" + task;
     }
 
     /**
@@ -116,7 +116,7 @@ public class Executor {
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
 
-        return "OK, I've marked this task as not done yet: \n" + task;
+        return "Fine, I've marked this task as not done yet: \n" + task;
     }
 
     /**
@@ -191,14 +191,14 @@ public class Executor {
 
         assert this.taskList != null : "The tasklist is null and has not been initialised";
         if (this.taskList.contains(task)) {
-            return "This task already exists in the tasklist.";
+            return "Here's a tech tip! This task already exists in the tasklist.";
         }
         this.taskList.add(task);
 
         assert this.storage != null : "The storage is null and has not been initialised";
         this.storage.saveFile(this.taskList);
 
-        return "Got it. I've added this task: \n" + task + "\n"
+        return "Sure. I've added this task: \n" + task + "\n"
                 + "Now you have " + this.taskList.size() + " tasks in the list.";
     }
 

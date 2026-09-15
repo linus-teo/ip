@@ -23,7 +23,7 @@ public class Parser {
     private static final String FROM_SEPARATOR = " /from ";
     private static final String TO_SEPARATOR = " /to ";
 
-    private static final String INVALID_COMMAND_ERROR = "OOPS!!! Please re-enter the command with a valid format! :-(";
+    private static final String INVALID_COMMAND_ERROR = "Here's a tech tip! Enter the command with a valid format! :-(";
 
     /**
      * Returns a list of strings containing the parsed input.
