@@ -8,7 +8,6 @@ import linus.invalidtaskexception.InvalidTaskException;
  * the command line and makes sense of the input.
  */
 public class Parser {
-    private static final String BYE_COMMAND = "bye";
     private static final String LIST_COMMAND = "list";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
@@ -34,9 +33,7 @@ public class Parser {
      */
     public List<String> parse(String input) throws InvalidTaskException {
         assert input != null : "Input text to be parsed is null";
-        if (input.equals(BYE_COMMAND)) {
-            return List.of(BYE_COMMAND);
-        } else if (input.equals(LIST_COMMAND)) {
+        if (input.equals(LIST_COMMAND)) {
             return List.of(LIST_COMMAND);
         } else if (input.matches(SIMPLE_COMMAND_REGEX)) {
             return this.parseSimpleCommand(input);

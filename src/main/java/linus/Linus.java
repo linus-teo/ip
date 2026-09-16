@@ -17,6 +17,12 @@ import linus.validator.Validator;
  * Represents the Linus chatbot which orchestrates the logical flow.
  */
 public class Linus {
+    private static final String BYE_COMMAND = "bye";
+    private static final String STORAGE_FILEPATH = "data/tasklist.txt";
+    private static final String INVALID_TASK_ID_ERROR = "Here's a tech tip! Enter a valid task ID :-(";
+    private static final String INVALID_DATE_FORMAT_ERROR =
+            "Here's a tech tip! Enter a valid date in the format \"yyyy-MM-dd\" :-(";
+
     private final Ui ui;
     private final Parser parser;
     private final Validator validator;
@@ -27,6 +33,8 @@ public class Linus {
      * Constructs the Ui, Parser, Validator, Executor and Storage for the Linus chatbot.
      *
      * @param filePath Path that the storage file is located.
+     * @throws IOException When the constructor is unable to create or load the storage due to input or output errors.
+     * @throws InvalidTaskException When the constructor is unable to load the tasklist due to malformed content.
      */
     public Linus(String filePath) throws IOException, InvalidTaskException {
         this.ui = new Ui();
@@ -38,11 +46,12 @@ public class Linus {
     }
 
     /**
-     * Creates and starts up the chatbot.
+     * Creates and starts up the chatbot. This is the entry point for the CLI.
+     * Prints and displays exceptions that occur to the command line.
      */
     static void main() {
         try {
-            Linus chatbot = new Linus("data/tasklist.txt");
+            Linus chatbot = new Linus(STORAGE_FILEPATH);
             chatbot.run();
         } catch (IOException | InvalidTaskException e) {
             Ui.display(e.getMessage());
@@ -53,7 +62,7 @@ public class Linus {
      * Starts up the chatbot by loading the Ui and scanning
      * for user input to execute commands.
      */
-    public void run() {
+    private void run() {
         Ui.sayHello();
         while (true) {
             String input = this.ui.read();
@@ -66,17 +75,18 @@ public class Linus {
     }
 
     private boolean processInput(String input) {
-        String response = this.getResponse(input);
-        if (response.equals("bye")) {
+        if (input.equals(BYE_COMMAND)) {
             return true;
         }
+        String response = this.getResponse(input);
         Ui.display(response);
         return false;
     }
 
     /**
      * Generates a response for the user's chat message.
-     * Method is meant to be used for GUI display.
+     * Parses, validates and executes the user's command.
+     * If an exception occurs, returns the error message.
      *
      * @param input The plaintext String input from the user.
      * @return Response message after attempting to execute command.
@@ -84,17 +94,14 @@ public class Linus {
     public String getResponse(String input) {
         try {
             List<String> parsedInput = this.parser.parse(input);
-            if (parsedInput.equals(List.of("bye"))) {
-                return input;
-            }
             this.validator.validate(parsedInput);
             return this.executor.execute(parsedInput);
         } catch (IOException | InvalidTaskException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {
-            return "Here's a tech tip! Enter a valid task ID :-(";
+            return INVALID_TASK_ID_ERROR;
         } catch (DateTimeParseException e) {
-            return "Here's a tech tip! Enter a valid date in the format \"yyyy-MM-dd\" :-(";
+            return INVALID_DATE_FORMAT_ERROR;
         }
     }
 }

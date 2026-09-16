@@ -11,9 +11,9 @@ import linus.invalidtaskexception.InvalidTaskException;
 
 public class ParserTest {
     @Test
-    public void parse_byeCommand_byeReturned() throws InvalidTaskException {
+    public void parse_listCommand_listReturned() throws InvalidTaskException {
         Parser parser = new Parser();
-        assertEquals(List.of("bye"), parser.parse("bye"));
+        assertEquals(List.of("list"), parser.parse("list"));
     }
 
     @Test

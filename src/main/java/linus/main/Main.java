@@ -16,10 +16,12 @@ import linus.ui.Ui;
  * A GUI for Linus using FXML.
  */
 public class Main extends Application {
+    private static final String STORAGE_FILEPATH = "data/tasklist.txt";
+
     @Override
     public void start(Stage stage) {
         try {
-            Linus linus = new Linus("data/tasklist.txt");
+            Linus linus = new Linus(STORAGE_FILEPATH);
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);

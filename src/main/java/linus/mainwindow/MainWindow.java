@@ -16,6 +16,8 @@ import linus.ui.Ui;
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
+    private static final String BYE_COMMAND = "bye";
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -50,14 +52,15 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
+        if (input.equals(BYE_COMMAND)) {
+            Platform.exit();
+            return;
+        }
         String response = linus.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getLinusDialog(response, linusImage)
         );
         userInput.clear();
-        if (input.equals("bye")) {
-            Platform.exit();
-        }
     }
 }

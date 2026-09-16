@@ -45,7 +45,7 @@ public class Executor {
         if (command.equals("list")) {
             return this.listAll();
         }
-        String description = parsedInput.get(1);
+        String description = parsedInput.get(Validator.TASK_DESCRIPTION_INDEX);
         switch (command) {
             case "mark":
                 assert parsedInput.size() == 2 : "Invalid format for mark command";
@@ -141,7 +141,7 @@ public class Executor {
     }
 
     /**
-     * Search the tasklist to find tasks with the specified keyword in the task description.
+     * Searches the tasklist to find tasks with the specified keyword in the task description.
      *
      * @param keyword The string to search for in the task description of all tasks.
      * @return Message containing all the tasks whose description contains keyword.
@@ -182,7 +182,8 @@ public class Executor {
                 break;
             case "event":
                 assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
-                LocalDate startDate = LocalDate.parse(parsedInput.get(2), Validator.DATE_FORMAT);
+                LocalDate startDate = LocalDate.parse(parsedInput.get(Validator.TASK_START_DATE_INDEX),
+                        Validator.DATE_FORMAT);
                 LocalDate endDate = LocalDate.parse(parsedInput.getLast(), Validator.DATE_FORMAT);
                 task = new Event(false, description, startDate, endDate);
                 break;

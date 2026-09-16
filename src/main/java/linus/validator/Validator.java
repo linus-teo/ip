@@ -13,6 +13,8 @@ import linus.task.Task;
  */
 public class Validator {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final int TASK_DESCRIPTION_INDEX = 1;
+    public static final int TASK_START_DATE_INDEX = 2;
 
     private static final String EMPTY_DESCRIPTION_ERROR = "Here's a tech tip! Enter a valid task description :-(";
     private static final String INVALID_TASK_INDEX_ERROR = "Here's a tech tip! Enter a valid task ID :-(";
@@ -46,7 +48,7 @@ public class Validator {
         if (command.equals("list")) {
             return;
         }
-        String description = parsedInput.get(1);
+        String description = parsedInput.get(TASK_DESCRIPTION_INDEX);
         switch (command) {
             case "find":
                 // Fallthrough
@@ -72,7 +74,7 @@ public class Validator {
             case "event":
                 assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
                 this.validateDescription(description);
-                String startDate = parsedInput.get(2);
+                String startDate = parsedInput.get(TASK_START_DATE_INDEX);
                 String endDate = parsedInput.getLast();
                 this.validateDateFormat(startDate);
                 this.validateDateFormat(endDate);

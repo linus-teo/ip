@@ -35,6 +35,23 @@ public class Storage {
             "Here's a tech tip! I'm unable to load the invalid Event task from storage";
     private static final String SAVE_FILE_ERROR = "Here's a tech tip! I'm unable to open and save the tasklist file.";
 
+    private static final String TEXT_SPLIT_REGEX = "\\s*\\|\\s*";
+    private static final String TODO_TASK_TYPE = "T";
+    private static final String DEADLINE_TASK_TYPE = "D";
+    private static final String EVENT_TASK_TYPE = "E";
+    private static final String TASK_COMPLETED_STATUS = "X";
+
+    private static final int TASK_TYPE_INDEX = 0;
+    private static final int TASK_STATUS_INDEX = 1;
+    private static final int TASK_DESCRIPTION_INDEX = 2;
+    private static final int TASK_DEADLINE_INDEX = 3;
+    private static final int TASK_START_DATE_INDEX = 3;
+    private static final int TASK_END_DATE_INDEX = 4;
+
+    private static final int MIN_TEXT_SPLIT_PARTS = 3;
+    private static final int TODO_SPLIT_PARTS = 3;
+    private static final int DEADLINE_SPLIT_PARTS = 4;
+    private static final int EVENT_SPLIT_PARTS = 5;
     private final File file;
 
     /**
@@ -69,6 +86,8 @@ public class Storage {
      * Loads the tasks in the storage file into the TaskList.
      *
      * @return Tasklist of tasks corresponding to the local storage tasklist file.
+     * @throws FileNotFoundException When there is an error opening and accessing the file to load the tasklist.
+     * @throws InvalidTaskException When the constructor is unable to load the tasklist due to malformed task format.
      */
     public List<Task> loadFile() throws FileNotFoundException, InvalidTaskException {
         try (Scanner scanner = new Scanner(this.file)) {
@@ -82,27 +101,27 @@ public class Storage {
         List<Task> taskList = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String text = scanner.nextLine();
-            Task task = this.loadTask(text);
+            Task task = this.createTask(text);
             taskList.add(task);
         }
         return taskList;
     }
 
-    private Task loadTask(String text) throws InvalidTaskException {
-        String[] parts = text.split("\\s*\\|\\s*");
-        if (parts.length < 3) {
+    private Task createTask(String text) throws InvalidTaskException {
+        String[] parts = text.split(TEXT_SPLIT_REGEX);
+        if (parts.length < MIN_TEXT_SPLIT_PARTS) {
             throw new InvalidTaskException(LOAD_TASK_ERROR);
         }
-        String taskType = parts[0];
-        String taskStatus = parts[1];
-        String description = parts[2];
+        String taskType = parts[TASK_TYPE_INDEX];
+        String taskStatus = parts[TASK_STATUS_INDEX];
+        String description = parts[TASK_DESCRIPTION_INDEX];
         boolean isDone = parseTaskStatus(taskStatus);
         switch (taskType) {
-            case "T":
+            case TODO_TASK_TYPE:
                 return createToDoTask(parts, isDone, description);
-            case "D":
+            case DEADLINE_TASK_TYPE:
                 return createDeadlineTask(parts, isDone, description);
-            case "E":
+            case EVENT_TASK_TYPE:
                 return createEventTask(parts, isDone, description);
             default:
                 throw new InvalidTaskException(LOAD_TASK_ERROR);
@@ -110,7 +129,7 @@ public class Storage {
     }
 
     private boolean parseTaskStatus(String status) throws InvalidTaskException {
-        if (status.equals("X")) {
+        if (status.equals(TASK_COMPLETED_STATUS)) {
             return true;
         } else if (status.isEmpty()) {
             return false;
@@ -120,7 +139,7 @@ public class Storage {
     }
 
     private ToDo createToDoTask(String[] parts, boolean isDone, String description) throws InvalidTaskException {
-        if (parts.length != 3) {
+        if (parts.length != TODO_SPLIT_PARTS) {
             throw new InvalidTaskException(LOAD_TODO_TASK_ERROR);
         }
         return new ToDo(isDone, description);
@@ -128,11 +147,11 @@ public class Storage {
 
     private Deadline createDeadlineTask(String[] parts, boolean isDone, String description)
             throws InvalidTaskException {
-        if (parts.length != 4) {
+        if (parts.length != DEADLINE_SPLIT_PARTS) {
             throw new InvalidTaskException(LOAD_DEADLINE_TASK_ERROR);
         }
         try {
-            LocalDate deadline = LocalDate.parse(parts[3]);
+            LocalDate deadline = LocalDate.parse(parts[TASK_DEADLINE_INDEX]);
             return new Deadline(isDone, description, deadline);
         } catch (DateTimeParseException e) {
             throw new InvalidTaskException(LOAD_DEADLINE_TASK_ERROR);
@@ -140,11 +159,11 @@ public class Storage {
     }
 
     private Event createEventTask(String[] parts, boolean isDone, String description) throws InvalidTaskException {
-        if (parts.length != 5) {
+        if (parts.length != EVENT_SPLIT_PARTS) {
             throw new InvalidTaskException(LOAD_EVENT_TASK_ERROR);
         }
-        String startText = parts[3];
-        String endText = parts[4];
+        String startText = parts[TASK_START_DATE_INDEX];
+        String endText = parts[TASK_END_DATE_INDEX];
         try {
             LocalDate start = LocalDate.parse(startText);
             LocalDate end = LocalDate.parse(endText);
@@ -158,6 +177,7 @@ public class Storage {
      * Saves the tasks from the TaskList into the local storage tasklist.
      *
      * @param taskList The collection of Task objects.
+     * @throws IOException When the tasklist storage file cannot be opened or accessed to save changes.
      */
     public void saveFile(List<Task> taskList) throws IOException {
         try (FileWriter fileWriter = new FileWriter(this.file)) {
