@@ -93,10 +93,18 @@ public class Executor {
         Task task = this.getTask(index);
 
         assert task != null : "The task to be marked is null";
+        boolean wasDone = task.isDone();
         task.mark();
 
-        assert this.storage != null : "The storage is null and has not been initialised";
-        this.storage.saveFile(this.taskList);
+        try {
+            assert this.storage != null : "The storage is null and has not been initialised";
+            this.storage.saveFile(this.taskList);
+        } catch (IOException e) {
+            if (!wasDone) {
+                task.unmark();
+            }
+            throw e;
+        }
 
         return "Yay! I've marked this task as done: \n" + task;
     }
@@ -112,10 +120,18 @@ public class Executor {
         Task task = this.getTask(index);
 
         assert task != null : "The task to be unmarked is null";
+        boolean wasDone = task.isDone();
         task.unmark();
 
-        assert this.storage != null : "The storage is null and has not been initialised";
-        this.storage.saveFile(this.taskList);
+        try {
+            assert this.storage != null : "The storage is null and has not been initialised";
+            this.storage.saveFile(this.taskList);
+        } catch (IOException e) {
+            if (wasDone) {
+                task.mark();
+            }
+            throw e;
+        }
 
         return "Fine, I've marked this task as not done yet: \n" + task;
     }
@@ -131,10 +147,16 @@ public class Executor {
         Task task = this.getTask(index);
 
         assert task != null : "The task to be deleted is null";
-        this.taskList.remove(task);
+        int taskIndex = Integer.parseInt(index) - 1;
+        this.taskList.remove(taskIndex);
 
-        assert this.storage != null : "The storage is null and has not been initialised";
-        this.storage.saveFile(this.taskList);
+        try {
+            assert this.storage != null : "The storage is null and has not been initialised";
+            this.storage.saveFile(this.taskList);
+        } catch (IOException e) {
+            this.taskList.add(taskIndex, task);
+            throw e;
+        }
 
         return "Noted. I've removed this task: \n" + task + "\nNow you have "
                 + this.taskList.size() + " tasks in the list.";

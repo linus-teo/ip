@@ -35,7 +35,7 @@ public class Storage {
             "Here's a tech tip! I'm unable to load the invalid Event task from storage";
     private static final String SAVE_FILE_ERROR = "Here's a tech tip! I'm unable to open and save the tasklist file.";
 
-    private static final String TEXT_SPLIT_REGEX = "\\s*\\|\\s*";
+    private static final String TEXT_SPLIT_REGEX = "\\|";
     private static final String TODO_TASK_TYPE = "T";
     private static final String DEADLINE_TASK_TYPE = "D";
     private static final String EVENT_TASK_TYPE = "E";
@@ -108,21 +108,21 @@ public class Storage {
     }
 
     private Task createTask(String text) throws InvalidTaskException {
-        String[] parts = text.split(TEXT_SPLIT_REGEX);
+        String[] parts = text.split(TEXT_SPLIT_REGEX, 3);
         if (parts.length < MIN_TEXT_SPLIT_PARTS) {
             throw new InvalidTaskException(LOAD_TASK_ERROR);
         }
-        String taskType = parts[TASK_TYPE_INDEX];
-        String taskStatus = parts[TASK_STATUS_INDEX];
-        String description = parts[TASK_DESCRIPTION_INDEX];
+        String taskType = parts[TASK_TYPE_INDEX].trim();
+        String taskStatus = parts[TASK_STATUS_INDEX].trim();
+        String remainder = parts[TASK_DESCRIPTION_INDEX].substring(1);
         boolean isDone = parseTaskStatus(taskStatus);
         switch (taskType) {
             case TODO_TASK_TYPE:
-                return createToDoTask(parts, isDone, description);
+                return createToDoTask(isDone, remainder);
             case DEADLINE_TASK_TYPE:
-                return createDeadlineTask(parts, isDone, description);
+                return createDeadlineTask(isDone, remainder);
             case EVENT_TASK_TYPE:
-                return createEventTask(parts, isDone, description);
+                return createEventTask(isDone, remainder);
             default:
                 throw new InvalidTaskException(LOAD_TASK_ERROR);
         }
@@ -138,32 +138,35 @@ public class Storage {
         }
     }
 
-    private ToDo createToDoTask(String[] parts, boolean isDone, String description) throws InvalidTaskException {
-        if (parts.length != TODO_SPLIT_PARTS) {
-            throw new InvalidTaskException(LOAD_TODO_TASK_ERROR);
-        }
+    private ToDo createToDoTask(boolean isDone, String description) throws InvalidTaskException {
         return new ToDo(isDone, description);
     }
 
-    private Deadline createDeadlineTask(String[] parts, boolean isDone, String description)
+    private Deadline createDeadlineTask(boolean isDone, String text)
             throws InvalidTaskException {
-        if (parts.length != DEADLINE_SPLIT_PARTS) {
+        int delimiterIndex = text.lastIndexOf('|');
+        if (delimiterIndex < 0) {
             throw new InvalidTaskException(LOAD_DEADLINE_TASK_ERROR);
         }
+        String description = text.substring(0, delimiterIndex - 1);
+        String deadlineText = text.substring(delimiterIndex + 1).trim();
         try {
-            LocalDate deadline = LocalDate.parse(parts[TASK_DEADLINE_INDEX]);
+            LocalDate deadline = LocalDate.parse(deadlineText);
             return new Deadline(isDone, description, deadline);
         } catch (DateTimeParseException e) {
             throw new InvalidTaskException(LOAD_DEADLINE_TASK_ERROR);
         }
     }
 
-    private Event createEventTask(String[] parts, boolean isDone, String description) throws InvalidTaskException {
-        if (parts.length != EVENT_SPLIT_PARTS) {
+    private Event createEventTask(boolean isDone, String text) throws InvalidTaskException {
+        int endDelimiter = text.lastIndexOf('|');
+        int startDelimiter = text.lastIndexOf('|', endDelimiter - 1);
+        if (startDelimiter < 0 || endDelimiter < 0) {
             throw new InvalidTaskException(LOAD_EVENT_TASK_ERROR);
         }
-        String startText = parts[TASK_START_DATE_INDEX];
-        String endText = parts[TASK_END_DATE_INDEX];
+        String description = text.substring(0, startDelimiter - 1);
+        String startText = text.substring(startDelimiter + 1, endDelimiter).trim();
+        String endText = text.substring(endDelimiter + 1).trim();
         try {
             LocalDate start = LocalDate.parse(startText);
             LocalDate end = LocalDate.parse(endText);

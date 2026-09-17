@@ -72,7 +72,7 @@ public class Parser {
      * @return Parsed input as a list of strings.
      */
     private List<String> parseDeadlineCommand(String input) {
-        int byIndex = input.indexOf(BY_SEPARATOR);
+        int byIndex = input.lastIndexOf(BY_SEPARATOR);
         String description = input.substring(DEADLINE_PREFIX.length(), byIndex);
         String date = input.substring(byIndex + BY_SEPARATOR.length());
         return List.of(DEADLINE_COMMAND, description, date);
@@ -90,8 +90,8 @@ public class Parser {
      * @return Parsed input as a list of strings.
      */
     private List<String> parseEventCommand(String input) {
-        int fromIndex = input.indexOf(FROM_SEPARATOR);
-        int toIndex = input.indexOf(TO_SEPARATOR);
+        int fromIndex = input.lastIndexOf(FROM_SEPARATOR);
+        int toIndex = input.lastIndexOf(TO_SEPARATOR);
         String description = input.substring(EVENT_PREFIX.length(), fromIndex);
         String startDate = input.substring(fromIndex + FROM_SEPARATOR.length(), toIndex);
         String endDate = input.substring(toIndex + TO_SEPARATOR.length());

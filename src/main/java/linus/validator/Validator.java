@@ -19,6 +19,7 @@ public class Validator {
     private static final String EMPTY_DESCRIPTION_ERROR = "Here's a tech tip! Enter a valid task description :-(";
     private static final String INVALID_TASK_INDEX_ERROR = "Here's a tech tip! Enter a valid task ID :-(";
     private static final String UNKNOWN_COMMAND_ERROR = "Here's a tech tip! Enter the command with a valid format! :-(";
+    private static final String TASK_INDEX_REGEX = "[1-9][0-9]*";
 
     /** The tasklist to validate the input against. */
     private final List<Task> taskList;
@@ -92,6 +93,9 @@ public class Validator {
     }
 
     private void validateTaskIndex(String index) throws NumberFormatException, InvalidTaskException {
+        if (!index.matches(TASK_INDEX_REGEX)) {
+            throw new NumberFormatException();
+        }
         int taskIndex = Integer.parseInt(index);
         if (taskIndex < 1 || taskIndex > this.taskList.size()) {
             throw new InvalidTaskException(INVALID_TASK_INDEX_ERROR);
