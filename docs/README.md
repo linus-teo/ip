@@ -11,8 +11,12 @@ Linus helps you to keep track of all your tasks so you never forget a task or mi
 ### 3. Add Todo Task
 ### 4. Add Deadline Task
 ### 5. Add Event Task
-### 6. Delete Tasks
-### 7. Mark Tasks
+### 6. Delete Task
+### 7. Mark Task
+### 8. Unmark Task
+### 9. Find Task
+### 10. List Tasks
+### 11. Exit Program
 
 
 ## Task Types

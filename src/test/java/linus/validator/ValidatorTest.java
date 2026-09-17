@@ -8,13 +8,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import linus.invalidtaskexception.InvalidTaskException;
-
 public class ValidatorTest {
     @Test
     public void validate_invalidTaskid_exceptionThrown() {
         Validator validator = new Validator(new ArrayList<>());
-        assertThrows(InvalidTaskException.class, () -> validator.validate(List.of("delete", "-1")));
+        assertThrows(NumberFormatException.class, () -> validator.validate(List.of("delete", "-1")));
     }
 
     @Test
