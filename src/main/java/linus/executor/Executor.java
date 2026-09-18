@@ -169,11 +169,14 @@ public class Executor {
      * @return Message containing all the tasks whose description contains keyword.
      */
     private String find(String keyword) {
-        return IntStream.range(0, this.taskList.size())
+        String matchingTasks = IntStream.range(0, this.taskList.size())
                 .filter(i -> this.taskList.get(i).getDescription().contains(keyword))
                 .mapToObj(i -> (i + 1) + ". " + this.taskList.get(i))
-                .reduce("Here are the matching tasks in your list:", (result, task) ->
-                        result + "\n" + task);
+                .reduce("", (result, task) -> result + "\n" + task);
+        if (matchingTasks.isEmpty()) {
+            return "Here's a tech tip! There are no matching tasks in your list.";
+        }
+        return "Here are the matching tasks in your list:" + matchingTasks;
     }
 
     /**

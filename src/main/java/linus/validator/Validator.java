@@ -19,6 +19,8 @@ public class Validator {
     private static final String EMPTY_DESCRIPTION_ERROR = "Here's a tech tip! Enter a valid task description :-(";
     private static final String INVALID_TASK_INDEX_ERROR = "Here's a tech tip! Enter a valid task ID :-(";
     private static final String UNKNOWN_COMMAND_ERROR = "Here's a tech tip! Enter the command with a valid format! :-(";
+    private static final String INVALID_START_END_ERROR =
+            "Here's a tech tip! The start date cannot be after end date! :-(";
     private static final String TASK_INDEX_REGEX = "[1-9][0-9]*";
 
     /** The tasklist to validate the input against. */
@@ -46,16 +48,15 @@ public class Validator {
         assert parsedInput != null : "Parsed input provided for validation is null";
         assert !parsedInput.isEmpty() : "No parsed input provided for validation";
         String command = parsedInput.getFirst();
-        if (command.equals("list")) {
-            return;
-        }
-        String description = parsedInput.get(TASK_DESCRIPTION_INDEX);
+
         switch (command) {
+            case "list":
+                break;
             case "find":
                 // Fallthrough
             case "todo":
                 assert parsedInput.size() == 2 : "Invalid number of details provided for a find/todo command";
-                this.validateDescription(description);
+                this.validateDescription(parsedInput.get(TASK_DESCRIPTION_INDEX));
                 break;
             case "mark":
                 // Fallthrough
@@ -64,21 +65,13 @@ public class Validator {
             case "delete":
                 assert parsedInput.size() == 2 : "Invalid number of details provided for a mark/unmark/delete command";
                 // For mark/unmark/delete command, the description represents the task index.
-                this.validateTaskIndex(description);
+                this.validateTaskIndex(parsedInput.get(TASK_DESCRIPTION_INDEX));
                 break;
             case "deadline":
-                assert parsedInput.size() == 3 : "Invalid number of details provided for a deadline command";
-                this.validateDescription(description);
-                String deadline = parsedInput.getLast();
-                this.validateDateFormat(deadline);
+                this.validateDeadlineCommand(parsedInput);
                 break;
             case "event":
-                assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
-                this.validateDescription(description);
-                String startDate = parsedInput.get(TASK_START_DATE_INDEX);
-                String endDate = parsedInput.getLast();
-                this.validateDateFormat(startDate);
-                this.validateDateFormat(endDate);
+                this.validateEventCommand(parsedInput);
                 break;
             default:
                 // Should not reach here.
@@ -102,7 +95,28 @@ public class Validator {
         }
     }
 
-    private void validateDateFormat(String date) throws DateTimeParseException {
-        LocalDate.parse(date, Validator.DATE_FORMAT);
+    private LocalDate validateDateFormat(String date) throws DateTimeParseException {
+        return LocalDate.parse(date, Validator.DATE_FORMAT);
+    }
+
+    private void validateDeadlineCommand(List<String> parsedInput) throws InvalidTaskException {
+        assert parsedInput.size() == 3 : "Invalid number of details provided for a deadline command";
+        String description = parsedInput.get(TASK_DESCRIPTION_INDEX);
+        this.validateDescription(description);
+        String deadline = parsedInput.getLast();
+        this.validateDateFormat(deadline);
+    }
+
+    private void validateEventCommand(List<String> parsedInput) throws InvalidTaskException {
+        assert parsedInput.size() == 4 : "Invalid number of details provided for an event command";
+        String description = parsedInput.get(TASK_DESCRIPTION_INDEX);
+        this.validateDescription(description);
+        String startDate = parsedInput.get(TASK_START_DATE_INDEX);
+        String endDate = parsedInput.getLast();
+        LocalDate start = this.validateDateFormat(startDate);
+        LocalDate end = this.validateDateFormat(endDate);
+        if (start.isAfter(end)) {
+            throw new InvalidTaskException(INVALID_START_END_ERROR);
+        }
     }
 }

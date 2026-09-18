@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ValidatorTest {
     @Test
-    public void validate_invalidTaskid_exceptionThrown() {
+    public void validate_invalidTaskId_exceptionThrown() {
         Validator validator = new Validator(new ArrayList<>());
         assertThrows(NumberFormatException.class, () -> validator.validate(List.of("delete", "-1")));
     }
